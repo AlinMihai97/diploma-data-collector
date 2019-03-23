@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Calendar } from '@ionic-native/calendar/ngx';
 import { NavController, Platform } from '@ionic/angular'
-import {Router } from '@angular/router'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-home',
@@ -11,17 +11,22 @@ import {Router } from '@angular/router'
 export class HomePage implements OnInit {
 
   ngOnInit(): void {
+    if (this.firstSetup()) {
+      this.router.navigate(['first-setup']);
+    }
   }
 
   calendars = [];
 
   constructor(private router: Router, public navCtrl: NavController, private calendar: Calendar, private plt: Platform) {
     this.plt.ready().then(() => {
-      this.calendar.listCalendars().then(data => {
-        this.calendars = data;
-      })
+      // this.calendar.listCalendars().then(data => {
+      //   this.calendars = data;
+      // })
     })
   }
+
+
 
   addEvent(cal) {
     let date = new Date();
@@ -36,5 +41,9 @@ export class HomePage implements OnInit {
   openCal(cal) {
 
     this.router.navigateByUrl("/cal-details/" + cal.name)
+  }
+
+  firstSetup() {
+    return true;
   }
 }

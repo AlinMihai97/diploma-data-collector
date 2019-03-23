@@ -6,6 +6,9 @@ const routes: Routes = [
   { path: 'home', loadChildren: './home/home.module#HomePageModule' },
   { path: 'about', loadChildren: './about/about.module#AboutPageModule' },
   { path: 'cal-details/:name', loadChildren: './cal-details/cal-details.module#CalDetailsPageModule' },
+  { path: 'first-setup', 
+    loadChildren: './first-setup/first-setup.module#FirstSetupPageModule'
+  },
 ];
 
 @NgModule({

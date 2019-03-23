@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)='backPage()' [disabled]="backButtonDisabled">
+          <ion-icon slot="start" name="arrow-back"></ion-icon>
+          Back
+      </ion-button>
+    </ion-buttons>
+    <ion-title text-center>First Time Setup</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)='nextPage()' [disabled]='nextButtonDisabled'>
+          Next
+          <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-router-outlet></ion-router-outlet>
+</ion-content>
