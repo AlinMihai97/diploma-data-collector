@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, Platform } from '@ionic/angular';
 import { Calendar } from '@ionic-native/calendar/ngx';
 import { ActivatedRoute} from '@angular/router'
+import { PlatformIndependentEvent } from '../model/platform-independent-model';
 
 @Component({
   selector: 'app-cal-details',
@@ -9,18 +10,20 @@ import { ActivatedRoute} from '@angular/router'
   styleUrls: ['./cal-details.page.scss'],
 })
 export class CalDetailsPage implements OnInit {
-  ngOnInit(): void {
-    this.calName = this.route.snapshot.paramMap.get('name')
-  }
+
   calName = '';
   events = [];
-  crossPlatformEvents = [];
+  crossPlatformEvents : PlatformIndependentEvent[] = [];
 
-  constructor(private route: ActivatedRoute, public navCtrl: NavController, private calendar: Calendar, private plt: Platform) {
+
+  ngOnInit(): void { 
+    this.calName = this.route.snapshot.paramMap.get('name')
+
     if (this.plt.is('ios')) {
       this.calendar.findAllEventsInNamedCalendar(this.calName).then(data => {
-        this.crossPlatformEvents = this.formatIos(data);
-        console.log(this.crossPlatformEvents);
+        console.log(data);
+        this.crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
+        console.log(this.crossPlatformEvents)
       });
     } else if (this.plt.is('android')) {
       let start = new Date();
@@ -28,38 +31,17 @@ export class CalDetailsPage implements OnInit {
       end.setDate(end.getDate() + 31);
       
       this.calendar.listEventsInRange(start, end).then(data => {
-        this.crossPlatformEvents = this.formatAndroid(data);
-        console.log(data);
-        // console.log(this.crossPlatformEvents);
+        this.crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
       });
     }
   }
-
-  formatIos(data) {
-    let returnArray = [];
-    data.forEach(element => {
-      let newElem = {
-        title: element.title,
-        startDate: (new Date(element.startDate)).toTimeString(),
-        endDate: (new Date(element.endDate)).toTimeString(),
-        location: element.location
-      }
-      returnArray.push(newElem);
-    });
-    return returnArray;
+  
+  constructor(private route: ActivatedRoute, public navCtrl: NavController, private calendar: Calendar, private plt: Platform) {
+    this.route = route;
+    this.navCtrl = navCtrl;
+    this.calendar = calendar;
+    this.plt = plt;
   }
 
-  formatAndroid(data) {
-    let returnArray = [];
-    data.forEach(element => {
-      let newElem = {
-        title: element.title,
-        startDate: (new Date(element.dtstart)).toTimeString(),
-        endDate: (new Date(element.dtend)).toTimeString(),
-        location: element.location
-      }
-      returnArray.push(newElem);
-    });
-    return returnArray;
-  }
+  
 }
