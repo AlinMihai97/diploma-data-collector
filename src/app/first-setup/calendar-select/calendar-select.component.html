@@ -1,6 +1,9 @@
 <div class="my-padding">
-    <p>
-        calendar-select works!
-      </p>
+    <h3> Select you work calendar: </h3>
+    <ion-list>
+        <ion-item *ngFor="let entry of form">
+            <ion-label>{{entry.val}}</ion-label>
+            <ion-checkbox (ionChange)='updateCheckedStatus()' slot="end" [(ngModel)]="entry.isChecked"></ion-checkbox>
+        </ion-item>
+    </ion-list>
 </div>
-

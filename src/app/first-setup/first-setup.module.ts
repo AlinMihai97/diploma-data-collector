@@ -15,18 +15,7 @@ const routes: Routes = [
     path: '',
     component: FirstSetupPage,
     children: [
-      { path: '', redirectTo: 'calendar-select', pathMatch: 'full' },
-      { 
-        path: 'calendar-select', 
-        component: CalendarSelectComponent },
-      {
-        path: 'email-select',
-        component: EmailSelectComponent
-      },
-      {
-        path: 'timespan-select',
-        component: TimespanSelectComponent
-      }
+      { path: '', redirectTo: 'calendar-select', pathMatch: 'full' }
     ]
   }
 ];

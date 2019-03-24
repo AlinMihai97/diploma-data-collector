@@ -15,34 +15,9 @@ export class HomePage implements OnInit {
       this.router.navigate(['first-setup']);
     }
   }
-
   calendars = [];
-
-  constructor(private router: Router, public navCtrl: NavController, private calendar: Calendar, private plt: Platform) {
-    this.plt.ready().then(() => {
-      // this.calendar.listCalendars().then(data => {
-      //   this.calendars = data;
-      // })
-    })
+  constructor(private router: Router) {
   }
-
-
-
-  addEvent(cal) {
-    let date = new Date();
-    let options = { calendarId: cal.id, calendarName: cal.name, url: 'https://ionicacademy.com', firstReminderMinutes: 15 };
-
-    this.calendar.createEventInteractivelyWithOptions('My new Event', 'Münster', 'Special Notes', date, date, options).then(res => {
-    }, err => {
-      console.log('err: ', err);
-    });
-  }
-
-  openCal(cal) {
-
-    this.router.navigateByUrl("/cal-details/" + cal.name)
-  }
-
   firstSetup() {
     return true;
   }
