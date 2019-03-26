@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-email-select',
@@ -7,8 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EmailSelectComponent implements OnInit {
 
+  @Input() setupData;
+  email = "";
   constructor() { }
 
   ngOnInit() {}
 
+  valueChanged() {
+    this.setupData.calendarEmail = this.email;
+  }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Calendar } from '@ionic-native/calendar/ngx';
 import { NavController, Platform } from '@ionic/angular'
 import { Router } from '@angular/router'
+import { UserDataService } from '../storageServices/user-data.service';
 
 @Component({
   selector: 'app-home',
@@ -11,14 +12,26 @@ import { Router } from '@angular/router'
 export class HomePage implements OnInit {
 
   ngOnInit(): void {
-    if (this.firstSetup()) {
-      this.router.navigate(['first-setup']);
-    }
+    /*if (this.firstSetup()) {
+      
+    }*/
+    this.userDataService.checkIfUserDataIsAvailable().then(
+      returnedValue => {
+        if(returnedValue === true) {
+          this.router.navigate(['first-setup']);
+        } else {
+          this.userDataService.getUserData().then(
+            result => {
+              console.log(result);
+            }
+          )
+        }
+      }
+    )
+
   }
   calendars = [];
-  constructor(private router: Router) {
+  constructor(private router: Router, private userDataService: UserDataService) {
   }
-  firstSetup() {
-    return true;
-  }
+  
 }

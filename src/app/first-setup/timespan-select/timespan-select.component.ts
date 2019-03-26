@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-timespan-select',
@@ -7,8 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TimespanSelectComponent implements OnInit {
 
+  weeks = "";
+
+  @Input() setupData;
+
   constructor() { }
 
   ngOnInit() {}
 
+  valueChanged() {
+    this.setupData.timeInPast = this.weeks;
+  }
 }

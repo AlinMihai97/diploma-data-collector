@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Calendar } from '@ionic-native/calendar/ngx';
 
@@ -9,10 +9,12 @@ import { Calendar } from '@ionic-native/calendar/ngx';
 })
 export class CalendarSelectComponent implements OnInit {
 
+  @Input() setupData;
+
   calendars = ["mamaie", "tataie"];
 
   selectedIndex = 0;
-  selectedCalednarName = "";
+  selectedCalednar;
 
   constructor(private calendar: Calendar, private plt: Platform) {
     this.plt.ready().then(() => {
@@ -22,4 +24,9 @@ export class CalendarSelectComponent implements OnInit {
     })
   }
   ngOnInit() { }
+
+  optionChanged() {
+    console.log(this.selectedCalednar);
+    this.setupData.selectedCalendarName = this.selectedCalednar.name;
+  }
 }

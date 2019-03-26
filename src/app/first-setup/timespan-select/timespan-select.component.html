@@ -2,11 +2,11 @@
     <h3>Select how long behind do you want us to look: </h3>
     <ion-item>
         <ion-label>Time in the past</ion-label>
-        <ion-select placeholder="Select One">
-            <ion-select-option value="2">2 weeks</ion-select-option>
-            <ion-select-option value="4">1 month</ion-select-option>
-            <ion-select-option value="8">2 months (Recomended)</ion-select-option>
-            <ion-select-option value="12">4 months</ion-select-option>
+        <ion-select [(ngModel)]="weeks" (ionChange)="valueChanged()" placeholder="Select One">
+            <ion-select-option [value]="2">2 weeks</ion-select-option>
+            <ion-select-option [value]="4">1 month</ion-select-option>
+            <ion-select-option [value]="8">2 months (Recomended)</ion-select-option>
+            <ion-select-option [value]="12">4 months</ion-select-option>
         </ion-select>
     </ion-item>
 </div>

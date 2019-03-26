@@ -2,8 +2,8 @@
     <h3> Select your work calendar: </h3>
     <ion-item>
         <ion-label>Calendar</ion-label>
-        <ion-select placeholder="Select One">
-            <ion-select-option *ngFor="let calendar of calendars"> {{calendar.name}}</ion-select-option>
+        <ion-select (ionChange)="optionChanged()" [(ngModel)]="selectedCalednar" placeholder="Select One">
+            <ion-select-option *ngFor="let calendar of calendars" [value]="calendar"> {{calendar.name}}</ion-select-option>
         </ion-select>
     </ion-item>
 </div>

@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title text-center>First Time Setup</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)='nextPage()' [disabled]='nextButtonDisabled'>
+      <ion-button (click)='checkSetup()' [disabled]='nextButtonDisabled'>
           Next
           <ion-icon slot="end" name="arrow-forward"></ion-icon>
       </ion-button>
@@ -11,7 +11,7 @@
 </ion-header>
 
 <ion-content>
-    <app-calendar-select></app-calendar-select>
-    <app-email-select></app-email-select>
-    <app-timespan-select></app-timespan-select>
+    <app-calendar-select [setupData]="setupData"></app-calendar-select>
+    <app-email-select [setupData]="setupData"></app-email-select>
+    <app-timespan-select [setupData]="setupData"></app-timespan-select>
 </ion-content>

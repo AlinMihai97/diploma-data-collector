@@ -1,6 +1,6 @@
 <div class="my-padding">
     <h3>What is the email address asociated with the calendar?</h3>
     <ion-item>
-        <ion-input placeholder="youremail@work.domain" type="email"></ion-input>
+        <ion-input (ionChange)="valueChanged()" [(ngModel)]="email" placeholder="youremail@work.domain" type="email"></ion-input>
     </ion-item>
 </div>
