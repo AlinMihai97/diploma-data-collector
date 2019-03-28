@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserDataService } from '../storageServices/user-data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-first-setup',
@@ -14,7 +15,7 @@ export class FirstSetupPage implements OnInit {
     calendarEmail: ""
   }
   ngOnInit() {}
-  constructor(private userDataService: UserDataService) {}
+  constructor(private router: Router, private userDataService: UserDataService) {}
 
   checkSetup() {
     if(this.setupData.selectedCalendarName === "" || this.setupData.selectedCalendarName === undefined) {
@@ -33,7 +34,15 @@ export class FirstSetupPage implements OnInit {
     console.log("The selected calendar name is " + this.setupData.selectedCalendarName + " with email: " + this.setupData.calendarEmail + " going " + this.setupData.timeInPast + " weeks back");
 
 
-    this.userDataService.saveUserData(this.setupData);
+    this.userDataService.saveUserData(this.setupData).then(
+      succes => {
+        this.router.navigate(["home"]);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+
     
   }
 }

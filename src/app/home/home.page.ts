@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Calendar } from '@ionic-native/calendar/ngx';
-import { NavController, Platform } from '@ionic/angular'
+import { Platform } from '@ionic/angular'
 import { Router } from '@angular/router'
 import { UserDataService } from '../storageServices/user-data.service';
 
@@ -11,27 +10,42 @@ import { UserDataService } from '../storageServices/user-data.service';
 })
 export class HomePage implements OnInit {
 
+  data;
   ngOnInit(): void {
-    /*if (this.firstSetup()) {
-      
-    }*/
-    this.userDataService.checkIfUserDataIsAvailable().then(
-      returnedValue => {
-        if(returnedValue === true) {
-          this.router.navigate(['first-setup']);
-        } else {
-          this.userDataService.getUserData().then(
-            result => {
-              console.log(result);
-            }
-          )
-        }
-      }
-    )
-
+    this.initFlow();
   }
   calendars = [];
-  constructor(private router: Router, private userDataService: UserDataService) {
+  constructor(private plt: Platform, private router: Router, private userDataService: UserDataService) {
   }
-  
+
+
+  initFlow() {
+    this.plt.ready().then(() => {
+      console.log("INIT CALLED");
+      this.userDataService.checkIfUserDataIsAvailable().then(
+        returnedValue => {
+          console.log(returnedValue)
+          if (returnedValue === false) {
+            this.router.navigate(['first-setup']);
+          } else {
+            this.userDataService.getUserData().then(
+              result => {
+                this.data = result;
+              }
+            )
+          }
+        }
+      )
+    });
+  }
+
+  restartApp() {
+    console.log("home 1");
+    this.userDataService.clearUserData().then(
+      ceva => {
+        console.log("data cleared");
+        this.initFlow();
+      }
+    );
+  }
 }
