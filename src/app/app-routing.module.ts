@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: 'first-setup', 
     loadChildren: './first-setup/first-setup.module#FirstSetupPageModule'
   },
+  { path: 'data-upload', loadChildren: './data-upload/data-upload.module#DataUploadPageModule' },
 ];
 
 @NgModule({
