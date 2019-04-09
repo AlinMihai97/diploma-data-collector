@@ -6,9 +6,19 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item>
-      <ion-icon name="checkmark"></ion-icon>
-      Gathering data...
-    </ion-item>
+    <div *ngFor="let item of itemList">
+      <ng-template [ngIf]="item.isLoading">
+        <ion-item [ngClass]="item.displayClass" lines="none">
+          <ion-label slot="start">{{item.loadingText}}</ion-label>
+          <ion-spinner slot="end" name="dots"></ion-spinner>
+        </ion-item>
+      </ng-template>
+      <ng-template [ngIf]="item.isSucces">
+        <ion-item lines="none">
+          <ion-label slot="start">{{item.loadingText}}</ion-label>
+          <ion-icon slot="end" name="checkmark"></ion-icon>
+        </ion-item>
+      </ng-template>
+    </div>
   </ion-list>
 </ion-content>
