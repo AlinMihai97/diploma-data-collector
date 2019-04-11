@@ -74,4 +74,17 @@ export class UserDataService {
     return;
   }
 
+
+  getUserDataEmptyModelObject() {
+    return {
+
+      userID: "",
+      userFitbitToken: "",
+    
+      selectedCalendarName : "",
+      timeInPast: "",
+      setupDate: new Date(),
+      calendarEmail: ""
+    };
+  }
 }

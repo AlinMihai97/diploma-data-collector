@@ -8,14 +8,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./first-setup.page.scss'],
 })
 export class FirstSetupPage implements OnInit {
-  setupData = {
-    selectedCalendarName : "",
-    timeInPast: "",
-    setupDate: new Date(),
-    calendarEmail: ""
-  }
+  setupData = null;
   ngOnInit() {}
-  constructor(private router: Router, private userDataService: UserDataService) {}
+  constructor(private router: Router, private userDataService: UserDataService) {
+    this.setupData = userDataService.getUserDataEmptyModelObject();
+  }
 
   checkSetup() {
     if(this.setupData.selectedCalendarName === "" || this.setupData.selectedCalendarName === undefined) {
@@ -36,7 +33,7 @@ export class FirstSetupPage implements OnInit {
 
     this.userDataService.saveUserData(this.setupData).then(
       succes => {
-        this.router.navigate(["home"]);
+        this.router.navigate(["data-upload"]);
       },
       error => {
         console.log(error);

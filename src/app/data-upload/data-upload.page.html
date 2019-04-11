@@ -6,16 +6,16 @@
 
 <ion-content padding>
   <ion-list>
-    <div *ngFor="let item of itemList">
-      <ng-template [ngIf]="item.isLoading">
-        <ion-item [ngClass]="item.displayClass" lines="none">
-          <ion-label slot="start">{{item.loadingText}}</ion-label>
+    <div *ngFor="let step of workSteps">
+      <ng-template [ngIf]="step.isLoading">
+        <ion-item [ngClass]="step.displayClass" lines="none">
+          <ion-label slot="start">{{step.loadingText}}</ion-label>
           <ion-spinner slot="end" name="dots"></ion-spinner>
         </ion-item>
       </ng-template>
-      <ng-template [ngIf]="item.isSucces">
+      <ng-template [ngIf]="step.isSucces">
         <ion-item lines="none">
-          <ion-label slot="start">{{item.loadingText}}</ion-label>
+          <ion-label slot="start">{{step.succesText}}</ion-label>
           <ion-icon slot="end" name="checkmark"></ion-icon>
         </ion-item>
       </ng-template>
