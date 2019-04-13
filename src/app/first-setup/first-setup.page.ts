@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UserDataService } from '../storageServices/user-data.service';
 import { Router } from '@angular/router';
+import { StorageService } from '../services/storage/storage-service.service';
 
 @Component({
   selector: 'app-first-setup',
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class FirstSetupPage implements OnInit {
   setupData = null;
   ngOnInit() {}
-  constructor(private router: Router, private userDataService: UserDataService) {
+  constructor(private router: Router, private userDataService: StorageService) {
     this.setupData = userDataService.getUserDataEmptyModelObject();
   }
 

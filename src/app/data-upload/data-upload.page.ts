@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { UserDataService } from '../storageServices/user-data.service';
 
-import { HttpClient } from '@angular/common/http';
+
+import { StorageService } from '../services/storage/storage-service.service';
 
 @Component({
   selector: 'app-data-upload',
@@ -20,11 +20,7 @@ export class DataUploadPage implements OnInit {
       work: function () {
         return new Promise(function (resolve, reject) {
 
-          let userToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyMjhUUUQiLCJzdWIiOiI2TFJUSFoiLCJ4YWkiOiIxNTI2NTQwMzczMzciLCJ4dmVyIjoiMCIsImlzcyI6IkZpdGJpdCIsInR5cCI6ImFjY2Vzc190b2tlbiIsInNjb3BlcyI6IndociB3cHJvIHdudXQgd3NsZSB3d2VpIHdtZmEgd3NvYyB3YWN0IHdzZXQgd2xvYyIsImV4cCI6MTU1NDg3MDg5MywiaWF0IjoxNTU0ODQyMDkzfQ.cEQdFlMJQsjfVnw288Z-M02FQmVuN8FUdefB0eUQEaY"
-          let userId = "6LRTHZ"
-          let apiBase = "https://stress-detector-diploma.herokuapp.com/detector/"
-
-          this.userDataService.getUserData(
+          this.storageService.getUserData(
             (userData) => {
               console.log("Got the following user data: " + userData);
               this.http.post()
@@ -54,7 +50,7 @@ export class DataUploadPage implements OnInit {
           // check if calendar is added to the user on the api
           // if not added add it now
 
-          this.userDataService.getUserData().then((userData) => {
+          this.storageService.getUserData().then((userData) => {
             console.log("got following user data: " + userData);
             setTimeout(() => {
               resolve(0)
@@ -127,7 +123,7 @@ export class DataUploadPage implements OnInit {
   hideClassName = "hideStep"
   showClassName = "fadeIn"
 
-  constructor(private userDataService: UserDataService, private http: HttpClient) {
+  constructor(private storageService: StorageService) {
     this.workSteps.forEach(step => {
       step.displayClass = this.hideClassName;
     });

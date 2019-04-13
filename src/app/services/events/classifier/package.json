@@ -1,0 +1,8 @@
+{
+  "name": "JS Class Extraction",
+  "version": "1.0.0",
+  "dependencies": {
+    "mathjs": "^5.8.0",
+    "underscore": "latest"
+  }
+}
