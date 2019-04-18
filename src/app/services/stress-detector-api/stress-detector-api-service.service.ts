@@ -6,7 +6,7 @@ import { User } from 'src/app/model/user';
   providedIn: 'root'
 })
 export class StressDetectorApiService {
-  userToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyMjhUUUQiLCJzdWIiOiI2TFJUSFoiLCJ4YWkiOiI4MTUwMzIwNjYyNTciLCJ4dmVyIjoiMCIsImlzcyI6IkZpdGJpdCIsInR5cCI6ImFjY2Vzc190b2tlbiIsInNjb3BlcyI6IndociB3cHJvIHdudXQgd3NsZSB3d2VpIHdtZmEgd3NvYyB3YWN0IHdzZXQgd2xvYyIsImV4cCI6MTU1NTIwNDAyOCwiaWF0IjoxNTU1MTc1MjI4fQ.nS4Bsd9Zep3DUcTGV1O_yjasZtT0aWPC9c4AihrtlKM";
+  userToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyMjhUUUQiLCJzdWIiOiI2TFJUSFoiLCJ4YWkiOiI0ODczOTkwMTMzNjIiLCJ4dmVyIjoiMCIsImlzcyI6IkZpdGJpdCIsInR5cCI6ImFjY2Vzc190b2tlbiIsInNjb3BlcyI6IndociB3cHJvIHdudXQgd3NsZSB3d2VpIHdtZmEgd3NvYyB3YWN0IHdzZXQgd2xvYyIsImV4cCI6MTU1NTU0ODQ2NCwiaWF0IjoxNTU1NTE5NjY0fQ.cOwwr8wRJ6JqZWqSLl2eR1FLgpBH5gzQz9cE4ujongE";
   userId = "6LRTHZ";
 
   apiBase = "https://stress-detector-diploma.herokuapp.com/detector";
@@ -36,6 +36,7 @@ export class StressDetectorApiService {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': this.userToken,
+      'Access-Control-Allow-Origin' : 'https://stress-detector-diploma.herokuapp.com/', 
     });
     this.http.post(this.apiBase + this.usersPath,{
       user_id: this.userId

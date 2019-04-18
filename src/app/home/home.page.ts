@@ -5,6 +5,7 @@ import { StressDetectorApiService } from '../services/stress-detector-api/stress
 import { StorageService } from '../services/storage/storage-service.service';
 import { CalendarService } from '../services/calendar/calendar-service.service';
 import { EventsService } from '../services/events/events-service.service';
+import { appInitialize } from '@ionic/angular/dist/app-initialize';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -63,6 +64,10 @@ export class HomePage implements OnInit {
       },
       error => console.log(error)
     )
+  }
+
+  testApi() {
+    this.api.addUser();
   }
 
 

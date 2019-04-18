@@ -2,7 +2,6 @@ import { Injectable, SystemJsNgModuleLoader } from '@angular/core';
 import { PlatformIndependentEvent } from 'src/app/model/platform-independent-model';
 import { StorageService } from '../storage/storage-service.service';
 import { CalendarEvent } from 'src/app/model/event';
-import { Classifier } from './classifier/classifier'
 
 
 
@@ -26,7 +25,6 @@ export class EventsService {
             untypedUserData.attendeeEventsAttendeeMappings = {};
           }
           // process userData
-
           let processingResult = this.processEventsInternal(untypedUserData.attendeeEventsAttendeeMappings, events);
 
           untypedUserData.attendeeEventsAttendeeMappings = processingResult.newMapping;
@@ -110,9 +108,5 @@ export class EventsService {
   private hashCode(str) {
     return str.split('').reduce((prevHash, currVal) =>
       (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
-  }
-
-  private classify() {
-    Classifier.classify();
   }
 }

@@ -19,21 +19,21 @@ export class CalDetailsPage implements OnInit {
   ngOnInit(): void { 
     this.calName = this.route.snapshot.paramMap.get('name')
 
-    if (this.plt.is('ios')) {
-      this.calendar.findAllEventsInNamedCalendar(this.calName).then(data => {
-        console.log(data);
-        this.crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
-        console.log(this.crossPlatformEvents)
-      });
-    } else if (this.plt.is('android')) {
-      let start = new Date();
-      let end = new Date();
-      end.setDate(end.getDate() + 31);
+    // if (this.plt.is('ios')) {
+    //   this.calendar.findAllEventsInNamedCalendar(this.calName).then(data => {
+    //     console.log(data);
+    //     this.crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
+    //     console.log(this.crossPlatformEvents)
+    //   });
+    // } else if (this.plt.is('android')) {
+    //   let start = new Date();
+    //   let end = new Date();
+    //   end.setDate(end.getDate() + 31);
       
-      this.calendar.listEventsInRange(start, end).then(data => {
-        this.crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
-      });
-    }
+    //   this.calendar.listEventsInRange(start, end).then(data => {
+    //     this.crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
+    //   });
+    // }
   }
   
   constructor(private route: ActivatedRoute, public navCtrl: NavController, private calendar: Calendar, private plt: Platform) {

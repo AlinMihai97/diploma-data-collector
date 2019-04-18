@@ -25,8 +25,8 @@ export class CalendarService {
     let crossPlatformEvents: PlatformIndependentEvent[] = [];
     return new Promise<PlatformIndependentEvent[]>((resolve, reject) => {
       if (this.plt.is('ios')) {
-
-        this.calendar.findAllEventsInNamedCalendar(calendarName).then(data => {
+        
+        this.calendar.findAllEventsInNamedCalendar(calendarName, new Date('2019-01-01T00:00:00'), new Date()).then(data => {
           crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
 
           // process cross platform events in some way in order to get data just in the required timespan
