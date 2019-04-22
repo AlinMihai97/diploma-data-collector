@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">StressDetector</string>
+    <string name="title_activity_main">StressDetector</string>
+    <string name="package_name">com.datacollector</string>
+    <string name="fileprovider_authority">com.datacollector.fileprovider</string>
+    <string name="custom_url_scheme">com.datacollector</string>
+</resources>

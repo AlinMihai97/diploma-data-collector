@@ -1,0 +1,6 @@
+{
+  "appId": "com.datacollector",
+  "appName": "StressDetector",
+  "bundledWebRuntime": false,
+  "webDir": "www"
+}

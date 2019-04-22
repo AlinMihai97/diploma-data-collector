@@ -6,6 +6,7 @@ import { StorageService } from '../services/storage/storage-service.service';
 import { CalendarService } from '../services/calendar/calendar-service.service';
 import { EventsService } from '../services/events/events-service.service';
 import { appInitialize } from '@ionic/angular/dist/app-initialize';
+import { AuthService } from '../services/auth/auth-service.service';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -18,7 +19,7 @@ export class HomePage implements OnInit {
     /*this.initFlow();*/
   }
   calendars = [];
-  constructor(private events: EventsService, private plt: Platform, private router: Router, private api: StressDetectorApiService, private storage: StorageService, private cal: CalendarService) {
+  constructor(private auth: AuthService, private events: EventsService, private plt: Platform, private router: Router, private api: StressDetectorApiService, private storage: StorageService, private cal: CalendarService) {
   }
 
   testStorage() {
@@ -70,7 +71,9 @@ export class HomePage implements OnInit {
     this.api.addUser();
   }
 
-
+  testAuth() {
+    this.auth.openFititAuthPage();
+  }
   /*initFlow() {
     this.plt.ready().then(() => {
       console.log("INIT CALLED");
