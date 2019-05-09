@@ -7,6 +7,9 @@ import { CalendarService } from '../services/calendar/calendar-service.service';
 import { EventsService } from '../services/events/events-service.service';
 import { appInitialize } from '@ionic/angular/dist/app-initialize';
 import { AuthService } from '../services/auth/auth-service.service';
+import { defaultUrlMatcher } from '@angular/router/src/shared';
+
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -72,8 +75,34 @@ export class HomePage implements OnInit {
   }
 
   testAuth() {
-    this.auth.openFititAuthPage();
+    var sampleStorageObject = {
+      field: "some field"
+    }
+    this.storage.saveUserData(sampleStorageObject).then(
+      stored => {
+        this.auth.getAuthToken().then(
+          (resultToken) => {
+            console.log("Home got token, trying to get it again from storage")
+            this.auth.getAuthToken().then(
+              (resultToken) => {
+                console.log("Home got token again")
+              },
+              (error) => {
+                console.log("error on second auth call")
+              }
+            )
+          },
+          (error) => {
+            console.log("error on first auth call")
+          }
+        )
+      },
+      error => {
+        console.log("Cannot store")
+      }
+    )
   }
+
   /*initFlow() {
     this.plt.ready().then(() => {
       console.log("INIT CALLED");

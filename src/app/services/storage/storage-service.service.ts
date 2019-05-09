@@ -71,4 +71,8 @@ export class StorageService {
       attendeeEventsAttendeeMappings: {}
     };
   }
+
+  getTokenFieldName() {
+    return "userFitbitToken"
+  }
 }
