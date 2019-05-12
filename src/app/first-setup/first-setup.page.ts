@@ -33,7 +33,7 @@ export class FirstSetupPage implements OnInit {
 
     this.userDataService.saveUserData(this.setupData).then(
       succes => {
-        this.router.navigate(["data-upload"]);
+        this.router.navigate(["main"]);
       },
       error => {
         console.log(error);

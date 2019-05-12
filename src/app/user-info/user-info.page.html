@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>User Info</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item lines="none">
+    <ion-avatar slot="start" class="user-profile-pic">
+      <img class="user-profile-pic" src="https://mediastiriv1.freenode.ro/image/201509/w295h180/media-144264794796847100.jpg">
+    </ion-avatar>
+    <ion-label>
+      <p class="attribute-name-header">{{name}}</p>
+      <p class="attribute-value-header">{{info}}</p>
+    </ion-label>
+  </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let key of keys">
+      <div class="attribute-content">
+        <p class="attribute-name">{{userInfo[key].fieldName}}</p>
+        <p class="attribute-value">{{userInfo[key].value}}</p>
+      </div>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

@@ -72,6 +72,16 @@ export class StorageService {
     };
   }
 
+  getUserInfoObjectKeysList() {
+    return [
+      "userID",
+      "userFitbitToken",
+      "selectedCalendarName",
+      "setupDate",
+      "calendarEmail"
+    ]
+  }
+
   getTokenFieldName() {
     return "userFitbitToken"
   }

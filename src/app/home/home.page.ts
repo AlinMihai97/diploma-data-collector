@@ -19,7 +19,7 @@ export class HomePage implements OnInit {
 
   data;
   ngOnInit(): void {
-    /*this.initFlow();*/
+    this.initFlow();
   }
   calendars = [];
   constructor(private auth: AuthService, private events: EventsService, private plt: Platform, private router: Router, private api: StressDetectorApiService, private storage: StorageService, private cal: CalendarService) {
@@ -86,6 +86,14 @@ export class HomePage implements OnInit {
             this.auth.getAuthToken().then(
               (resultToken) => {
                 console.log("Home got token again")
+                this.auth.getAuthToken().then(
+                  (result) => {
+                    console.log("Got token for the third time")
+                  },
+                  (error) => {
+                    console.log("error on third call")
+                  }
+                )
               },
               (error) => {
                 console.log("error on second auth call")
@@ -103,16 +111,20 @@ export class HomePage implements OnInit {
     )
   }
 
-  /*initFlow() {
+  goAnOtherPage() {
+    this.router.navigateByUrl("/main")
+  }
+
+  initFlow() {
     this.plt.ready().then(() => {
       console.log("INIT CALLED");
-      this.userDataService.checkIfUserDataIsAvailable().then(
+      this.storage.checkIfUserDataIsAvailable().then(
         returnedValue => {
           console.log(returnedValue)
           if (returnedValue === false) {
             this.router.navigate(['first-setup']);
           } else {
-            this.userDataService.getUserData().then(
+            this.storage.getUserData().then(
               result => {
                 this.data = result;
               }
@@ -123,13 +135,13 @@ export class HomePage implements OnInit {
     });
   }
 
-  restartApp() {
-    console.log("home 1");
-    this.userDataService.clearUserData().then(
-      ceva => {
-        console.log("data cleared");
-        this.initFlow();
-      }
-    );
-  }*/
+  // restartApp() {
+  //   console.log("home 1");
+  //   this.userDataService.clearUserData().then(
+  //     ceva => {
+  //       console.log("data cleared");
+  //       this.initFlow();
+  //     }
+  //   );
+  // }
 }

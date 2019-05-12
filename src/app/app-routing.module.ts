@@ -10,6 +10,9 @@ const routes: Routes = [
     loadChildren: './first-setup/first-setup.module#FirstSetupPageModule'
   },
   { path: 'data-upload', loadChildren: './data-upload/data-upload.module#DataUploadPageModule' },
+  { path: 'main', loadChildren: './main/main.module#MainPageModule' },
+  { path: 'user-info', loadChildren: './user-info/user-info.module#UserInfoPageModule' },
+  { path: 'calendar-view', loadChildren: './main/calendar-view/calendar-view.module#CalendarViewPageModule' },
 ];
 
 @NgModule({

@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button>
+        <ion-icon class="icon-size" name="menu"></ion-icon>
+      </ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Main page
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-menu side="start" menuId="first">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Stress Detector</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item (click)="navigateToUserInfo()">
+        <ion-icon class="icon-size-menu" name="person"></ion-icon>
+        User profile
+      </ion-item>
+      <ion-item>
+        <ion-icon class="icon-size-menu" name="cog"></ion-icon>
+        Settings
+      </ion-item>
+      <ion-item (click)="navigateToAbout()">
+        <ion-icon class="icon-size-menu" name="information-circle"></ion-icon>
+        About app
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-router-outlet main>
+</ion-router-outlet>

@@ -37,15 +37,37 @@ export class AuthService {
     expires_in: "31536000"
   }
 
+  // cache object
+  private cache = {
+    token: undefined,
+    ttl: 0,
+    active: false
+  }
+
   constructor(private storage: StorageService, private http: HttpClient) {
     this.browserListener = undefined
+    this.resetCache()
   }
+
+  
 
   // Main function to be called in this service
   getAuthToken() {
 
     this.DEBUG("getAuthToken() called", undefined)
     return new Promise((resolve, reject) => {
+      
+      this.DEBUG("Checking if token is cached", undefined)
+      if(this.cache.active) {
+        if(this.cache.ttl - new Date().getTime() > 3600 || this.cache.ttl === 0) {
+          this.DEBUG("Token is cached responding with token", this.cache.token)
+          resolve(this.cache.token)
+          return
+        } else {
+          this.resetCache()
+          this.DEBUG("Token is close to expiration, continuing auth flow", undefined)
+        }
+      }
 
       this.DEBUG("Getting data from storage", undefined)
       this.storage.getUserData().then(
@@ -116,7 +138,6 @@ export class AuthService {
       if (this.browserListener !== undefined) {
         this.browserListener.remove()
       }
-
       this.DEBUG("Listener removed, registering it again", undefined)
       this.browserListener = Browser.addListener("browserPageLoaded", (info) => {
 
@@ -167,6 +188,11 @@ export class AuthService {
           let validity = true
           if(!response["active"]) {
             validity = false
+          } else {
+            this.DEBUG("Setting cache to active with ttl: ", response["exp"])
+            this.cache.active = true
+            this.cache.token = token
+            this.cache.ttl = response["exp"]
           }
           resolve(validity)
         },
@@ -209,5 +235,11 @@ export class AuthService {
     if (objToPrint !== undefined) {
       console.log(objToPrint)
     }
+  }
+
+  private resetCache() {
+    this.cache.token = ""
+    this.cache.ttl = 0
+    this.cache.active = false
   }
 }
