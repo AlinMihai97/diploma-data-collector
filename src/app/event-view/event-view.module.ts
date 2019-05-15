@@ -5,13 +5,17 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CalendarViewPage } from './calendar-view.page';
-import {CalendarListEntryComponent} from '../calendar-list-entry/calendar-list-entry.component'
+import { EventViewPage } from './event-view.page';
+import { ErrorEventComponent } from './error-event/error-event.component';
 
 const routes: Routes = [
   {
-    path: '',
-    component: CalendarViewPage
+    path: ':id',
+    component: EventViewPage
+  },
+  {
+    path: '**',
+    component: ErrorEventComponent
   }
 ];
 
@@ -22,6 +26,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CalendarViewPage, CalendarListEntryComponent]
+  declarations: [EventViewPage, ErrorEventComponent]
 })
-export class CalendarViewPageModule {}
+export class EventViewPageModule {}

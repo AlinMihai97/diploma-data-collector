@@ -7,19 +7,13 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { CalendarViewPageModule } from './calendar-view/calendar-view.module';
-import { CalendarViewPage } from './calendar-view/calendar-view.page';
+import { CalendarListViewComponent } from './calendar-list-view/calendar-list-view.component';
+import { CalendarListEntryComponent } from './calendar-list-entry/calendar-list-entry.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: MainPage,
-    children: [
-        {
-            path: 'lala',
-            component: CalendarViewPage
-        }
-    ]
+    component: MainPage
   }
 ];
 
@@ -28,10 +22,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    CalendarViewPageModule,
     RouterModule.forChild(routes)
   ],
   exports: [RouterModule],
-  declarations: [MainPage]
+  declarations: [MainPage, CalendarListViewComponent, CalendarListEntryComponent]
 })
 export class MainSubroutingModule {}

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PlatformIndependentEvent } from 'src/app/model/platform-independent-model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendar-list-entry',
@@ -34,7 +35,7 @@ export class CalendarListEntryComponent implements OnInit {
   endDate: String = undefined
   title: String = ""
 
-  constructor() { }
+  constructor(private router: Router) { }
   ngOnInit() {} 
 
   private formatDate(date: Date): String {
@@ -55,5 +56,9 @@ export class CalendarListEntryComponent implements OnInit {
     return "" + number
   }
 
+  private goToEventDetail() {
+    // replace with actual event id
+    this.router.navigateByUrl("/event-view/" + this.prediction)
+  }
 
 }

@@ -5,6 +5,7 @@ import { Platform } from '@ionic/angular';
 
 export class PlatformIndependentEvent {
 
+    event_id: number;
     title = "";
     startDate: number;
     endDate: number;

@@ -26,15 +26,15 @@ export class CalendarService {
     return new Promise<PlatformIndependentEvent[]>((resolve, reject) => {
       if (this.plt.is('ios')) {
         
-        this.calendar.findAllEventsInNamedCalendar(calendarName, new Date('2019-01-01T00:00:00'), new Date()).then(data => {
-          crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
+        // this.calendar.findAllEventsInNamedCalendar(calendarName, new Date('2019-01-01T00:00:00'), new Date()).then(data => {
+        //   crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
 
-          // process cross platform events in some way in order to get data just in the required timespan
+        //   // process cross platform events in some way in order to get data just in the required timespan
 
-          resolve(crossPlatformEvents);
-        },
-          error => reject(error)
-        );
+        //   resolve(crossPlatformEvents);
+        // },
+        //   error => reject(error)
+        // );
       } else if (this.plt.is('android')) {
         reject("Android event retrival not yet implemented");
         //Reimplement all Android logic

@@ -31,9 +31,47 @@
         <ion-icon class="icon-size-menu" name="information-circle"></ion-icon>
         About app
       </ion-item>
+      <ion-item (click)="navigateToAbout()">
+        <ion-icon class="icon-size-menu" name="sync"></ion-icon>
+        Sync app
+      </ion-item>
     </ion-list>
   </ion-content>
 </ion-menu>
 
-<ion-router-outlet main>
-</ion-router-outlet>
+<ion-content padding main>
+  <div class="my-tabs">
+    <div class="my-tabs-inner">
+      <ng-container *ngIf="tab === 'calendar'">
+        <app-calendar-list-view></app-calendar-list-view>
+      </ng-container>
+
+      <ng-container *ngIf="tab === 'speakers'">
+        Your speakers content
+      </ng-container>
+
+      <ng-container *ngIf="tab === 'map'">
+        Your map content
+      </ng-container>
+    </div>
+
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button (click)="show('calendar')">
+        <ion-icon name="calendar"></ion-icon>
+        <ion-label>Schedule</ion-label>
+        <ion-badge>6</ion-badge>
+      </ion-tab-button>
+
+      <ion-tab-button (click)="show('speakers')">
+        <ion-icon name="contacts"></ion-icon>
+        <ion-label>Speakers</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button (click)="show('map')">
+        <ion-icon name="map"></ion-icon>
+        <ion-label>Map</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+
+  </div>
+</ion-content>

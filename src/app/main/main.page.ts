@@ -37,5 +37,10 @@ export class MainPage implements OnInit {
 
   navigateToAbout() {
     this.router.navigateByUrl("/about")
-  } 
+  }
+
+  tab = 'calendar';
+  show(tab) {
+    this.tab = tab;
+  }
 }

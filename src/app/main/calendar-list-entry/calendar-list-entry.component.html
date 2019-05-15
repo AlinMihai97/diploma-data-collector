@@ -1,7 +1,16 @@
-<ion-item>
-  <div>
-    <ion-label slot="start">{{title}}</ion-label>
-    <ion-label slot="start">{{startDate}} untill {{endDate}}</ion-label>
-    <ion-label slot="end">{{prediction}}</ion-label>
+<ion-item (click)="goToEventDetail()" lines="full">
+  <div slot="start">
+    <ion-label>
+      {{title}}
+    </ion-label>
+    <ion-label>
+      {{startDate}}
+    </ion-label>
+    <ion-label>
+      {{endDate}}
+    </ion-label>
   </div>
+
+
+  <ion-label slot="end">{{prediction}}</ion-label>
 </ion-item>
