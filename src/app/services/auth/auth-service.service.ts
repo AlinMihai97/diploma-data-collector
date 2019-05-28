@@ -55,7 +55,7 @@ export class AuthService {
   getAuthToken() {
 
     this.DEBUG("getAuthToken() called", undefined)
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve: (value: string) => void, reject) => {
       
       this.DEBUG("Checking if token is cached", undefined)
       if(this.cache.active) {
@@ -83,7 +83,7 @@ export class AuthService {
 
           // Check if there is a token available
           // If not it must be first login or new install
-          if (storageData[fieldName] === undefined || storageData === "") {
+          if (storageData[fieldName] === undefined || storageData[fieldName] === "") {
 
             this.DEBUG("Token not found on storage, this must be first login", undefined)
             this.openFititAuthFlow(storageData).then(
@@ -197,8 +197,9 @@ export class AuthService {
           resolve(validity)
         },
         (error) => {
-          console.log(error)
-          reject(error)
+          // In case an error is thrown by the validity we should resolve with false
+          this.DEBUG("Introspect returned error, resolving with false", error)
+          resolve(error)
         },
         () => console.log("Finnished")
       )

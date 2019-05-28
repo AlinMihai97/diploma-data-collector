@@ -8,6 +8,10 @@ import { EventsService } from '../services/events/events-service.service';
 import { appInitialize } from '@ionic/angular/dist/app-initialize';
 import { AuthService } from '../services/auth/auth-service.service';
 import { defaultUrlMatcher } from '@angular/router/src/shared';
+import { Calendar } from '../model/calendar';
+import { CalendarEvent } from '../model/event';
+import { User } from '../model/user';
+import { ClassifierService } from '../services/classifier/classifier.service';
 
 
 @Component({
@@ -22,7 +26,7 @@ export class HomePage implements OnInit {
     this.initFlow();
   }
   calendars = [];
-  constructor(private auth: AuthService, private events: EventsService, private plt: Platform, private router: Router, private api: StressDetectorApiService, private storage: StorageService, private cal: CalendarService) {
+  constructor(private classifier: ClassifierService, private auth: AuthService, private events: EventsService, private plt: Platform, private router: Router, private api: StressDetectorApiService, private storage: StorageService, private cal: CalendarService) {
   }
 
   testStorage() {
@@ -71,7 +75,51 @@ export class HomePage implements OnInit {
   }
 
   testApi() {
-    this.api.addUser();
+    let user = new User()
+    user.user_id = "some random user"
+    this.api.addUser(user).then(
+      result => console.log(result),
+      error => console.log(error)
+    )
+    // this.api.getUserList().then(
+    //   result => {
+    //     console.log(result)
+    //     let demoCal = new Calendar()
+    //     demoCal.calendar_id = 123
+    //     demoCal.email = "some calendar email"
+    //     if (result.length != 0) {
+    //       var user_id = result[0].user_id
+    //       this.api.addCalendar(user_id, demoCal).then(
+    //         result => {
+    //           console.log(result)
+    //           var demoEvent = new CalendarEvent()
+    //           demoEvent.start_time = new Date().getTime()
+    //           demoEvent.end_time = new Date().getTime() + 10000
+    //           demoEvent.is_organizer = false
+    //           demoEvent.location = "some location"
+    //           demoEvent.participants = []
+    //           demoEvent.event_id = 1000
+
+    //           this.api.addEvent(user_id, 123, demoEvent).then(
+    //             result => {
+    //               console.log(result)
+    //             },
+    //             error => {
+    //               console.log(error)
+    //             }
+    //           )
+    //         },
+    //         error => {
+    //           console.log(error)
+    //         }
+    //       )
+    //     }
+
+    //   },
+    //   error => {
+    //     console.log(error)
+    //   }
+    // )
   }
 
   testAuth() {
@@ -135,6 +183,19 @@ export class HomePage implements OnInit {
     });
   }
 
+  testClassifier() {
+    console.log(this.classifier.classify("daily meeting"))
+    console.log(this.classifier.classify("daily sprints"))
+    console.log(this.classifier.classify("Board review"))
+    console.log(this.classifier.classify("Party Friday"))
+    console.log(this.classifier.classify("candidate interview"))
+    console.log(this.classifier.classify("Monthly review"))
+    console.log(this.classifier.classify("budget cuts"))
+    console.log(this.classifier.classify("happy friday"))
+    console.log(this.classifier.classify("team building"))
+    console.log(this.classifier.classify("social gathering"))
+    console.log(this.classifier.classify("one on one"))
+  }
   // restartApp() {
   //   console.log("home 1");
   //   this.userDataService.clearUserData().then(
