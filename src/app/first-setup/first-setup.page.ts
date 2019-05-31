@@ -11,7 +11,11 @@ export class FirstSetupPage implements OnInit {
   setupData = null;
   ngOnInit() {}
   constructor(private router: Router, private userDataService: StorageService) {
-    this.setupData = userDataService.getUserDataEmptyModelObject();
+    this.setupData = {}
+
+    this.setupData.selectedCalendarName = ""
+    this.setupData.calendarEmail = ""
+    this.setupData.timeInPast = ""
   }
 
   checkSetup() {
@@ -31,14 +35,26 @@ export class FirstSetupPage implements OnInit {
     console.log("The selected calendar name is " + this.setupData.selectedCalendarName + " with email: " + this.setupData.calendarEmail + " going " + this.setupData.timeInPast + " weeks back");
 
 
-    this.userDataService.saveUserData(this.setupData).then(
-      succes => {
-        this.router.navigate(["main"]);
+    this.userDataService.setSelectedCalendarName(this.setupData.selectedCalendarName).then(
+      set => {
+        if(set) {
+          this.userDataService.setCalendarEmail(this.setupData.calendarEmail).then(
+            set => {
+              if(set) {
+                this.userDataService.setTimeInPast(this.setupData.timeInPast).then(
+                  set => {
+                    this.router.navigate(["/verify-api"])
+                  },
+                  error => console.log(error)
+                )
+              }
+            },
+            error => console.log(error)
+          )
+        }
       },
-      error => {
-        console.log(error);
-      }
-    );
+      error => console.log(error)
+    )
 
     
   }

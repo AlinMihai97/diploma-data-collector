@@ -49,17 +49,17 @@ export class AuthService {
     this.resetCache()
   }
 
-  
+
 
   // Main function to be called in this service
   getAuthToken() {
 
     this.DEBUG("getAuthToken() called", undefined)
     return new Promise((resolve: (value: string) => void, reject) => {
-      
+
       this.DEBUG("Checking if token is cached", undefined)
-      if(this.cache.active) {
-        if(this.cache.ttl - new Date().getTime() > 3600 || this.cache.ttl === 0) {
+      if (this.cache.active) {
+        if (this.cache.ttl - new Date().getTime() > 3600 || this.cache.ttl === 0) {
           this.DEBUG("Token is cached responding with token", this.cache.token)
           resolve(this.cache.token)
           return
@@ -70,11 +70,9 @@ export class AuthService {
       }
 
       this.DEBUG("Getting data from storage", undefined)
-      this.storage.getUserData().then(
-        (storageData) => {
-
-          this.DEBUG("Got the following data from storage: ", storageData)
-          var fieldName = this.storage.getTokenFieldName()
+      this.storage.getUserFitbitToken().then(
+        (storedToken) => {
+          this.DEBUG("Got the following data from storage: ", storedToken)
 
           var succesResultCallback = (resultToken) => {
             this.DEBUG("Returning with result", resultToken)
@@ -83,10 +81,10 @@ export class AuthService {
 
           // Check if there is a token available
           // If not it must be first login or new install
-          if (storageData[fieldName] === undefined || storageData[fieldName] === "") {
+          if (storedToken === undefined || storedToken === "") {
 
             this.DEBUG("Token not found on storage, this must be first login", undefined)
-            this.openFititAuthFlow(storageData).then(
+            this.openFititAuthFlow().then(
               succesResultCallback,
               (error) => {
                 this.DEBUG("Fitbit auth flow error", undefined)
@@ -94,7 +92,6 @@ export class AuthService {
             )
           } else {
             // check validity
-            var storedToken = storageData[fieldName]
 
             this.DEBUG("Found stored token: ", storedToken)
             this.DEBUG("Checking token validty: ", undefined)
@@ -109,7 +106,7 @@ export class AuthService {
                 } else {
 
                   this.DEBUG("Token not valid, starting auth flow", undefined)
-                  this.openFititAuthFlow(storageData).then(
+                  this.openFititAuthFlow().then(
                     succesResultCallback,
                     (error) => {
                       this.DEBUG("Fitbit auth flow error", undefined)
@@ -132,7 +129,7 @@ export class AuthService {
     });
   }
 
-  private openFititAuthFlow(storageInfo) {
+  private openFititAuthFlow() {
     return new Promise((resolve, reject) => {
       this.DEBUG("Removing listener", undefined)
       if (this.browserListener !== undefined) {
@@ -143,21 +140,42 @@ export class AuthService {
 
         this.DEBUG("Browser finnished with url", info)
         // do some parsing of the info
-        var parsingResult = this.parseCallbackUrl(info.url)
+        var parsingResult = this.parseCallbackUrlForToken(info.url)
+        var user_id = this.parseCallbackUrlForUserId(info.url).user_id
 
-        this.DEBUG("Storing token info", undefined)
-        storageInfo[this.storage.getTokenFieldName()] = parsingResult.token
-        this.storage.saveUserData(storageInfo).then(
-          (storedObj) => {
+        this.DEBUG("Storing user_id", user_id)
+        this.storage.setUserId(user_id).then(
+          set => {
+            if (set) {
+              this.DEBUG("Succesfully stored user_id", user_id)
 
-            this.DEBUG("Stored the following token: ", storedObj[this.storage.getTokenFieldName()])
-            resolve(this.storage.getTokenFieldName())
+              this.DEBUG("Storing user token", parsingResult.token)
+              this.storage.setUserFitbitToken(parsingResult.token).then(
+                (set) => {
+                  if (set) {
+                    this.storage.getUserFitbitToken().then(
+                      token => {
+                        this.DEBUG("Stored the following token: ", token)
+                        resolve(token)
+                      }
+                    )
+                  }
+                  else {
+                    reject("Token could not be set")
+                  }
+
+                },
+                (error) => {
+
+                  this.DEBUG("Failed to store result with error: ", error)
+                  reject(error)
+                }
+              )
+            } else {
+              reject("Could not store user_id")
+            }
           },
-          (error) => {
-
-            this.DEBUG("Failed to store result with error: ", error)
-            reject(error)
-          }
+          error => reject(error)
         )
       });
 
@@ -183,26 +201,26 @@ export class AuthService {
       // fix this call
       this.http.post(this.introspectUrl,
         body.toString(), { headers }).subscribe(
-        (response) => {
-          this.DEBUG("Fitbit introspect responded with object", response)
-          let validity = true
-          if(!response["active"]) {
-            validity = false
-          } else {
-            this.DEBUG("Setting cache to active with ttl: ", response["exp"])
-            this.cache.active = true
-            this.cache.token = token
-            this.cache.ttl = response["exp"]
-          }
-          resolve(validity)
-        },
-        (error) => {
-          // In case an error is thrown by the validity we should resolve with false
-          this.DEBUG("Introspect returned error, resolving with false", error)
-          resolve(error)
-        },
-        () => console.log("Finnished")
-      )
+          (response) => {
+            this.DEBUG("Fitbit introspect responded with object", response)
+            let validity = true
+            if (!response["active"]) {
+              validity = false
+            } else {
+              this.DEBUG("Setting cache to active with ttl: ", response["exp"])
+              this.cache.active = true
+              this.cache.token = token
+              this.cache.ttl = response["exp"]
+            }
+            resolve(validity)
+          },
+          (error) => {
+            // In case an error is thrown by the validity we should resolve with false
+            this.DEBUG("Introspect returned error, resolving with false", error)
+            resolve(false)
+          },
+          () => console.log("Finnished")
+        )
     });
   }
 
@@ -218,7 +236,7 @@ export class AuthService {
     return authUrl
   }
 
-  private parseCallbackUrl(url: String) {
+  private parseCallbackUrlForToken(url: String) {
 
     this.DEBUG("Starting parsing for url: ", url)
     var parsedUrl = url.replace(this.callbackUrl, "")
@@ -228,6 +246,19 @@ export class AuthService {
     this.DEBUG("Parsed token is: ", splitedResult2[0])
     return {
       token: splitedResult2[0]
+    }
+  }
+
+  private parseCallbackUrlForUserId(url: String) {
+
+    this.DEBUG("Starting parsing for url: ", url)
+    var parsedUrl = url.replace(this.callbackUrl, "")
+    var splitedResult1 = parsedUrl.split("user_id=")
+    var splitedResult2 = splitedResult1[1].split("&")
+
+    this.DEBUG("Parsed token is: ", splitedResult2[0])
+    return {
+      user_id: splitedResult2[0]
     }
   }
 

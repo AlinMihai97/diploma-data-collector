@@ -17,21 +17,21 @@ export class EventsService {
 
   proccessEventsForApi(events: PlatformIndependentEvent[]): Promise<CalendarEvent[]> {
     return new Promise<CalendarEvent[]>((resolve, reject) => {
-      this.storage.getUserData().then(
+      this.storage.getAttendeeEventsAttendeeMappings().then(
         userData => {
           // get userData
-          let untypedUserData = userData as any;
-          if (untypedUserData.attendeeEventsAttendeeMappings === undefined) {
-            untypedUserData.attendeeEventsAttendeeMappings = {};
+          let attendeeEventsAttendeeMappings = userData as any;
+          if (attendeeEventsAttendeeMappings === undefined) {
+            attendeeEventsAttendeeMappings = {};
           }
           // process userData
-          let processingResult = this.processEventsInternal(untypedUserData.attendeeEventsAttendeeMappings, events);
+          let processingResult = this.processEventsInternal(attendeeEventsAttendeeMappings, events);
 
-          untypedUserData.attendeeEventsAttendeeMappings = processingResult.newMapping;
+          attendeeEventsAttendeeMappings = processingResult.newMapping;
           let calendarEvents = processingResult.formatedEvents;
 
           // save userData
-          this.storage.saveUserData(untypedUserData).then(
+          this.storage.setAttendeeEventsAttendeeMappings(attendeeEventsAttendeeMappings).then(
             result => {
               console.log("[EVENTS SERVICE]: saved the following user model: " + result)
               resolve(calendarEvents);

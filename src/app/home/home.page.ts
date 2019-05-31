@@ -30,7 +30,7 @@ export class HomePage implements OnInit {
   }
 
   testStorage() {
-    this.storage.checkIfUserDataIsAvailable().then(
+    this.storage.checkIfUserSetupExists().then(
       result => {
         console.log("Does any data exist? Ans: " + result)
       },
@@ -54,7 +54,7 @@ export class HomePage implements OnInit {
   };
 
   testEvents() {
-    this.storage.getUserData().then(
+    this.storage.getUserId().then(
       result => {
         console.log(result);
         this.cal.getEventsFromCalendar("not implemented", "alinmihai97@gmail.com").then(
@@ -76,9 +76,29 @@ export class HomePage implements OnInit {
 
   testApi() {
     let user = new User()
-    user.user_id = "some random user"
-    this.api.addUser(user).then(
-      result => console.log(result),
+    user.user_id = "6LRTHZ"
+    this.api.deleteUser(user.user_id).then(
+      operationResult => {
+        if (operationResult) {
+          console.log("user deleted")
+          this.api.addUser(user).then(
+            operationResult => {
+              if (operationResult) {
+                console.log("user added")
+                this.api.getUserList().then(
+                  result => {
+                    console.log(result)
+                  },
+                  error => {
+                    console.log(error)
+                  }
+                )
+              }
+            },
+            error => console.log(error)
+          )
+        }
+      },
       error => console.log(error)
     )
     // this.api.getUserList().then(
@@ -123,38 +143,29 @@ export class HomePage implements OnInit {
   }
 
   testAuth() {
-    var sampleStorageObject = {
-      field: "some field"
-    }
-    this.storage.saveUserData(sampleStorageObject).then(
-      stored => {
+
+    this.auth.getAuthToken().then(
+      (resultToken) => {
+        console.log("Home got token, trying to get it again from storage")
         this.auth.getAuthToken().then(
           (resultToken) => {
-            console.log("Home got token, trying to get it again from storage")
+            console.log("Home got token again")
             this.auth.getAuthToken().then(
-              (resultToken) => {
-                console.log("Home got token again")
-                this.auth.getAuthToken().then(
-                  (result) => {
-                    console.log("Got token for the third time")
-                  },
-                  (error) => {
-                    console.log("error on third call")
-                  }
-                )
+              (result) => {
+                console.log("Got token for the third time")
               },
               (error) => {
-                console.log("error on second auth call")
+                console.log("error on third call")
               }
             )
           },
           (error) => {
-            console.log("error on first auth call")
+            console.log("error on second auth call")
           }
         )
       },
-      error => {
-        console.log("Cannot store")
+      (error) => {
+        console.log("error on first auth call")
       }
     )
   }
@@ -166,15 +177,16 @@ export class HomePage implements OnInit {
   initFlow() {
     this.plt.ready().then(() => {
       console.log("INIT CALLED");
-      this.storage.checkIfUserDataIsAvailable().then(
+      this.storage.checkIfUserSetupExists().then(
         returnedValue => {
           console.log(returnedValue)
           if (returnedValue === false) {
             this.router.navigate(['first-setup']);
           } else {
-            this.storage.getUserData().then(
+            this.router.navigate(["verify-api"])
+            this.storage.getUserId().then(
               result => {
-                this.data = result;
+                console.log(result)
               }
             )
           }

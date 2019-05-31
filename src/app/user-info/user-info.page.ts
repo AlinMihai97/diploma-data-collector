@@ -11,11 +11,11 @@ export class UserInfoPage implements OnInit {
 
   name = "Vadim Tudor"
   info = "Presedintele Romaniei"
-  keys = [] 
+  keys = []
 
   userInfo = {
     // Personal info
-    userID: {
+    userId: {
       fieldName: "Fitbit user ID",
       value: ""
     },
@@ -40,28 +40,37 @@ export class UserInfoPage implements OnInit {
   constructor(private plt: Platform, private storage: StorageService) {
     this.keys = Object.keys(this.userInfo)
 
-    if(!this.plt.is("mobile")) {
+    if (!this.plt.is("mobile")) {
       this.keys.forEach((key) => {
         this.userInfo[key].value = "Not available on browser"
       });
     } else {
-      this.storage.getUserData().then(
+      this.storage.getAllStoredUserData().then(
         (info) => {
-          this.keys.forEach((key) => {
-            this.userInfo[key].value = info[key]
-          });
+          console.log("User page got the following data: ", info)
+          if (info === undefined) {
+            this.setError()
+          } else {
+            this.keys.forEach((key) => {
+              this.userInfo[key].value = info[key]
+            });
+          }
         },
         (error) => {
-          this.keys.forEach((key) => {
-            this.userInfo[key].value = "Error when getting data from storage"
-          });
+          this.setError()
         }
       )
     }
   }
 
+  setError() {
+    this.keys.forEach((key) => {
+      this.userInfo[key].value = "Error when getting data from storage"
+    });
+  }
+
   ngOnInit() {
   }
 
-  
+
 }
