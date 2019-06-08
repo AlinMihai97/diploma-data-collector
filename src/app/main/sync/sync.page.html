@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Events sync status</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <div *ngIf="!loadingFinished">
+    <ion-item lines="none">
+      <ion-label text-center>Sync in progress</ion-label>
+    </ion-item>
+    <ion-item class="spinner-container" lines="none">
+      <ion-spinner class="center-item" name="crescent"></ion-spinner>
+    </ion-item>
+  </div>
+  <div *ngIf="loadingFinished">
+    <ion-item *ngFor="let message of messagesArray" lines="none">
+      <ion-label>{{message}}</ion-label>
+    </ion-item>
+    <ion-button [disabled]="!loadingFinished" expand="block" class="center-item" (click)="closeModal()">
+      Go back to Main Page
+    </ion-button>
+  </div>
+</ion-content>

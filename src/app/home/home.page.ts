@@ -39,39 +39,35 @@ export class HomePage implements OnInit {
   }
 
   testCalendar() {
-    this.cal.getAllCalendarNames().then(
+    let endDatte = new Date()
+    endDatte.setDate(30)
+    this.cal.getEventsFromCalendar(new Date(), endDatte, "alinmihai97@gmail.com").then(
       result => {
         console.log(result)
-        this.cal.getEventsFromCalendar("not implemented", "alinmihai97@gmail.com").then(
-          result => {
-            console.log(result);
-          },
-          error => console.log(error)
-        )
       },
       error => console.log(error)
     )
   };
 
   testEvents() {
-    this.storage.getUserId().then(
-      result => {
-        console.log(result);
-        this.cal.getEventsFromCalendar("not implemented", "alinmihai97@gmail.com").then(
-          result => {
-            console.log(result);
-            this.events.proccessEventsForApi(result).then(
-              result => {
-                console.log(result)
-              },
-              error => console.log(error)
-            )
-          },
-          error => console.log(error)
-        )
-      },
-      error => console.log(error)
-    )
+    // this.storage.getUserId().then(
+    //   result => {
+    //     console.log(result);
+    //     this.cal.getEventsFromCalendar("not implemented", "alinmihai97@gmail.com").then(
+    //       result => {
+    //         console.log(result);
+    //         this.events.proccessEventsForApi(result).then(
+    //           result => {
+    //             console.log(result)
+    //           },
+    //           error => console.log(error)
+    //         )
+    //       },
+    //       error => console.log(error)
+    //     )
+    //   },
+    //   error => console.log(error)
+    // )
   }
 
   testApi() {

@@ -1,16 +1,12 @@
 <ion-item (click)="goToEventDetail()" lines="full">
-  <div slot="start">
-    <ion-label>
+
+  <ion-label slot="start" class="sloted-fix-left">
+    <div text-wrap class="bolded-text">
       {{title}}
-    </ion-label>
-    <ion-label>
-      {{startDate}}
-    </ion-label>
-    <ion-label>
-      {{endDate}}
-    </ion-label>
-  </div>
-
-
-  <ion-label slot="end">{{prediction}}</ion-label>
+    </div>
+    <div>
+      {{timeInterval}}
+    </div>
+  </ion-label>
+  <ion-label slot="end" class="sloted-fix-right">{{prediction}}</ion-label>
 </ion-item>

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { PlatformIndependentEvent } from 'src/app/model/platform-independent-model';
+import { InterfaceEventInfo } from 'src/app/model/interface-event-info';
 
 @Component({
   selector: 'app-calendar-list-view',
@@ -10,207 +11,94 @@ export class CalendarListViewComponent implements OnInit {
 
   startDate = new Date().getTime()
 
+  daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ]
+
+  monthsOfYear = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ]
+
   constructor() { }
 
+  @Input()
+  set globalCalendarEventsArray(globalCalendarEventsArray: InterfaceEventInfo[]) {
+    console.log("received the following events")
+    console.log(globalCalendarEventsArray)
+    this.eventList = []
+    globalCalendarEventsArray.forEach(event => {
+      this.eventList.push({
+        event: event.deviceEvent,
+        prediction: event.prediction.hasPrediction ? event.prediction.value : "NoPre",
+        header: {
+          displayed: false,
+          title: "Some day"
+        }
+      })
+      this.initHeaders()
+    })
+    console.log(this.eventList)
+  }
 
 
   ngOnInit() {
-    this.currentHeader = 0
-    this.headers.forEach((header) => header.displayed = false)
+
+  }
+  initHeaders() {
+    this.headers = []
     this.eventList.sort((a, b) => {
       return a.event.startDate - b.event.startDate
     }).forEach((event) => {
-      event.header.displayed = this.shouldDrawHeaderEvent(event.event)
-      event.header.title = this.headers[this.currentHeader].title
+      let processedDate = this.processDateForEvent(event.event)
+      event.header.title = processedDate
+
+      let searchedDate = this.headers.find(header => {
+        return header == processedDate
+      })
+
+      if(searchedDate === undefined) {
+        event.header.displayed = true
+        this.headers.push(processedDate)
+      } else {
+        event.header.displayed = false
+      }
     })
   }
 
-  eventList = [
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 100,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 101,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 102,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 100,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 101,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 102,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 100,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 101,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 102,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 100,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 101,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 102,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 100,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 101,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    },
-    {
-      event: this.createMockPlatformEvent(),
-      prediction: 102,
-      header: {
-        displayed: false,
-        title: "Today"
-      }
-    }
-  ]
+  eventList = []
 
-  private createMockPlatformEvent(): PlatformIndependentEvent {
-    var event = new PlatformIndependentEvent()
-    event.title = "This is a very cool event"
-    this.startDate += 20000000  
-    event.startDate = this.startDate
-    event.endDate = (this.startDate + 8000000)
-    return event
-  }
+  private headers: string[] = []
 
-  private currentHeader = 0;
-  private headers = [
-    {
-      title: "Today",
-      displayed: false,
-      endDate: this.getTodayEnd()
-    },
-    {
-      title: "Tommorow",
-      displayed: false,
-      endDate: this.getTommorowEnd()
-    },
-    {
-      title: "In the future",
-      displayed: false,
-      endDate: this.getInfiniteEnd()
-    }
-  ]
-  private shouldDrawHeaderEvent(event: PlatformIndependentEvent) {
-    if(this.currentHeader >= this.headers.length - 1) {
-      return false
-    }
-    var selectedHeader = this.headers[this.currentHeader]
-    if(event.startDate <= selectedHeader.endDate) {
-      if(selectedHeader.displayed) {
-        
-        return false
-      } else {
-        
-        selectedHeader.displayed = true
-        return true
-      }
-    } else {
-      while(event.startDate > selectedHeader.endDate && this.currentHeader < this.headers.length - 1) {
-        this.currentHeader++
-        selectedHeader = this.headers[this.currentHeader]
-      }
-      selectedHeader.displayed = true
-      return true
+  private processDateForEvent(event: PlatformIndependentEvent): string {
+    let startDate = new Date(event.startDate)
+
+    let processedDate = ""
+    processedDate = "" + this.daysOfWeek[startDate.getDay()] + ", "
+    processedDate += startDate.getDate() + " "
+    processedDate += this.monthsOfYear[startDate.getMonth()]
+
+    if (startDate.getFullYear() != new Date().getFullYear()) {
+      processedDate += " " + startDate.getFullYear()
     }
 
-    return false
+    return processedDate
   }
 
-  getTodayEnd() {
-    return new Date().setHours(23,59,59,999);
-  }
-
-  getTommorowEnd() {
-    var newEnd = this.getTodayEnd()
-    return new Date(newEnd + 100000).setHours(23,59,59,999)
-  }
-
-  getInfiniteEnd() {
-    return 8640000000000000
-  }
 }

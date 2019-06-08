@@ -28,5 +28,6 @@ export class CalendarSelectComponent implements OnInit {
   optionChanged() {
     console.log(this.selectedCalednar);
     this.setupData.selectedCalendarName = this.selectedCalednar.name;
+    this.setupData.selectedCalendarId = this.selectedCalednar.id;
   }
 }

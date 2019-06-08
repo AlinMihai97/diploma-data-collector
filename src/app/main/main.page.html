@@ -31,7 +31,7 @@
         <ion-icon class="icon-size-menu" name="information-circle"></ion-icon>
         About app
       </ion-item>
-      <ion-item (click)="navigateToAbout()">
+      <ion-item (click)="sync()">
         <ion-icon class="icon-size-menu" name="sync"></ion-icon>
         Sync app
       </ion-item>
@@ -40,36 +40,40 @@
 </ion-menu>
 
 <ion-content padding main>
-  <div class="my-tabs">
+  <div *ngIf="firstSyncInProgress" class="some-margin">
+    <ion-item lines="none">
+      <ion-label text-center text-wrap>Please wait while events sync</ion-label>
+    </ion-item>
+    <ion-item class="spinner-container" lines="none">
+      <ion-spinner class="center-item" name="crescent"></ion-spinner>
+    </ion-item>
+  </div>
+  <div class="my-tabs" *ngIf="!firstSyncInProgress">
     <div class="my-tabs-inner">
-      <ng-container *ngIf="tab === 'calendar'">
-        <app-calendar-list-view></app-calendar-list-view>
+      <ng-container *ngIf="tab === 'schedule'">
+        <app-calendar-list-view [globalCalendarEventsArray]="globalCalendarEventsArray"></app-calendar-list-view>
       </ng-container>
 
-      <ng-container *ngIf="tab === 'speakers'">
+      <ng-container *ngIf="tab === 'week'">
         Your speakers content
       </ng-container>
 
-      <ng-container *ngIf="tab === 'map'">
+      <ng-container *ngIf="tab === 'month'">
         Your map content
       </ng-container>
     </div>
 
     <ion-tab-bar slot="bottom">
-      <ion-tab-button (click)="show('calendar')">
-        <ion-icon name="calendar"></ion-icon>
+      <ion-tab-button (click)="show('schedule')">
         <ion-label>Schedule</ion-label>
-        <ion-badge>6</ion-badge>
       </ion-tab-button>
 
-      <ion-tab-button (click)="show('speakers')">
-        <ion-icon name="contacts"></ion-icon>
-        <ion-label>Speakers</ion-label>
+      <ion-tab-button (click)="show('week')">
+        <ion-label>Week</ion-label>
       </ion-tab-button>
 
-      <ion-tab-button (click)="show('map')">
-        <ion-icon name="map"></ion-icon>
-        <ion-label>Map</ion-label>
+      <ion-tab-button (click)="show('month')">
+        <ion-label>Month</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
 

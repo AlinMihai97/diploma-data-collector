@@ -13,8 +13,7 @@ export class CalendarListEntryComponent implements OnInit {
   @Input()
   set platformEvent(platformEvent: PlatformIndependentEvent) {
     this._platformEvent = platformEvent
-    this.startDate = this.formatDate(new Date(platformEvent.startDate))
-    this.endDate = this.formatDate(new Date(platformEvent.endDate))
+    this.timeInterval = this.processDateIntervalForEvent(platformEvent)
     this.title = platformEvent.title
   }
   get nplatformEventme(): PlatformIndependentEvent { return this._platformEvent; }
@@ -25,40 +24,51 @@ export class CalendarListEntryComponent implements OnInit {
   @Input()
   set prediction(prediction: Number) {
     this._prediction = prediction
-    
+
   }
   get prediction(): Number { return this._prediction; }
-  
 
 
-  startDate: String = undefined
-  endDate: String = undefined
+
+  timeInterval: String = ""
   title: String = ""
 
   constructor(private router: Router) { }
-  ngOnInit() {} 
-
-  private formatDate(date: Date): String {
-    var dateResult = ""
-    dateResult += this.addZero(date.getDate()) + "/"
-    dateResult += this.addZero(date.getMonth() + 1) + "/"
-    dateResult += this.addZero(date.getFullYear()) + " "
-    
-    dateResult += this.addZero(date.getHours()) + ":"
-    dateResult += this.addZero(date.getMinutes())
-    return dateResult
-  }
-
-  private addZero(number) {
-    if(number < 10) {
-      return "0" + number
-    }
-    return "" + number
-  }
+  ngOnInit() { }
 
   private goToEventDetail() {
-    // replace with actual event id
-    this.router.navigateByUrl("/event-view/" + this.prediction)
+    this.router.navigateByUrl("/event-view/" + this._platformEvent.event_id)
   }
 
+  private processDateIntervalForEvent(platformEvent: PlatformIndependentEvent) {
+    let returnedInterval = ""
+    let startDate = new Date(platformEvent.startDate)
+    let endDate = new Date(platformEvent.endDate)
+
+
+    returnedInterval += startDate.getHours() + ":" + this.getMinutesString(startDate.getMinutes()) + " - "
+    returnedInterval += endDate.getHours() + ":" + this.getMinutesString(endDate.getMinutes()) + " "
+    returnedInterval += this.getTimeZoneStirng(endDate.getTimezoneOffset())
+
+    return returnedInterval
+  }
+
+  private getMinutesString(minutes) {
+    if (minutes < 10)
+      return "0" + minutes
+
+    return "" + minutes
+  }
+
+  private getTimeZoneStirng(offset) {
+    let returnValue = "UTC"
+    if (offset < 0) {
+      returnValue += "+"
+      offset = offset * -1
+    } else {
+      returnValue += "-"
+    }
+
+    return returnValue + Math.floor(offset / 60) + ":" + this.getMinutesString(offset % 60)
+  }
 }

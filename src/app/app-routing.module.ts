@@ -11,8 +11,10 @@ const routes: Routes = [
   },
   { path: 'data-upload', loadChildren: './data-upload/data-upload.module#DataUploadPageModule' },
   { path: 'main', loadChildren: './main/main.module#MainPageModule' },
-  { path: 'user-info', loadChildren: './user-info/user-info.module#UserInfoPageModule' },  { path: 'event-view', loadChildren: './event-view/event-view.module#EventViewPageModule' },
-  { path: 'verify-api', loadChildren: './verify-api/verify-api.module#VerifyApiPageModule' }
+  { path: 'user-info', loadChildren: './user-info/user-info.module#UserInfoPageModule' },
+  { path: 'event-view', loadChildren: './event-view/event-view.module#EventViewPageModule' },
+  { path: 'verify-api', loadChildren: './verify-api/verify-api.module#VerifyApiPageModule' },
+  { path: 'sync', loadChildren: './main/sync/sync.module#SyncPageModule' }
 
 ];
 

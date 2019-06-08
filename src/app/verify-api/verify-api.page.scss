@@ -1,5 +1,17 @@
 .spinner-postion {
     position: absolute;
-    top: 45%;
+    top: 40%;
     left: 47%;
+}
+
+.action-message {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 45%;
+    display: flex;
+}
+
+.action-message > ion-label {
+    margin: auto;
 }

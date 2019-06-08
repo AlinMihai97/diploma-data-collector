@@ -1,9 +1,99 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>View some event</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Event details</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  Here should be some event
+  <h3>{{event.title}}</h3>
+  <ion-item-divider>
+    <ion-label>
+      Basic event info
+    </ion-label>
+  </ion-item-divider>
+  <ion-item lines="none">
+    <ion-icon name="pin" slot="start"></ion-icon>
+    <ion-label text-wrap slot="start">{{event.location}}</ion-label>
+  </ion-item>
+  <ion-item *ngIf="!shouldDisplayTwoDates" lines="none">
+    <ion-icon name="time" slot="start"></ion-icon>
+    <ion-label text-wrap>
+      <div>
+        {{event.line1Date}}
+      </div>
+      <div>
+        {{event.line2Date}}
+      </div>
+    </ion-label>
+  </ion-item>
+  <ion-item lines="none" *ngIf="event.prediction > -200">
+    <ion-icon name="heart" slot="start"></ion-icon>
+    <ion-label text-wrap>Predicted heart rate delta: {{event.prediction}}</ion-label>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-icon name="calendar" slot="start"></ion-icon>
+    <ion-label text-wrap>{{event.calendar}}</ion-label>
+  </ion-item>
+  <ion-item-divider *ngIf="event.attendessInfo.length > 0 || event.organizer !== ''">
+    <ion-label>
+      Event participants
+    </ion-label>
+  </ion-item-divider>
+  <ion-item lines="full">
+    <ion-icon name="people" slot="start"></ion-icon>
+    <ion-label text-wrap>
+      <div class="bolded-text">
+        Organizer
+      </div>
+      <div>
+        {{event.organizer}}
+      </div>
+    </ion-label>
+  </ion-item>
+  <ion-list *ngIf="event.attendessInfo.length > 0">
+    <ion-item *ngFor="let attendee of event.attendessInfo" lines="full">
+      <ion-label slot="start" text-wrap class="sloted-fix-left">
+        <div>
+          {{attendee.name}}
+        </div>
+        <div>
+          {{attendee.email}}
+        </div>
+      </ion-label>
+      <ion-label text-wrap slot="end" class="sloted-fix-right">
+        {{attendee.status}}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-item-divider>
+    <ion-label>
+      This Event on the API
+    </ion-label>
+  </ion-item-divider>
+
+  <ion-item lines="none">
+    <ion-label text-wrap>
+      <div class="bolded-text">
+        Event classified topic
+      </div>
+      <div>
+        {{event.apiTopic}}
+      </div>
+    </ion-label>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-label text-wrap>
+      <div class="bolded-text">
+        Event ID
+      </div>
+      <div>
+        {{event.eventId}}
+      </div>
+    </ion-label>
+  </ion-item>
 </ion-content>

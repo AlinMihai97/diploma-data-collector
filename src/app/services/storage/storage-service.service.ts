@@ -15,6 +15,7 @@ export class StorageService {
     userFitbitToken: "userFitbitToken",
 
     selectedCalendarName: "selectedCalendarName",
+    selectedCalendarId: "selectedCalendarId",
     timeInPast: "timeInPast",
     setupDate: "setupDate",
     calendarEmail: "calendarEmail",
@@ -37,6 +38,9 @@ export class StorageService {
   setSelectedCalendarName(value: any) {
     return this.setKeyWithValue(this.storageKeys.selectedCalendarName, value)
   }
+  setSelectedCalendarId(value: any) {
+    return this.setKeyWithValue(this.storageKeys.selectedCalendarId, value)
+  }
   setTimeInPast(value: any) {
     return this.setKeyWithValue(this.storageKeys.timeInPast, value)
   }
@@ -57,8 +61,14 @@ export class StorageService {
   getSelectedCalendarName() {
     return this.getValueFromKey(this.storageKeys.selectedCalendarName)
   }
+  getSelectedCalendarId() {
+    return this.getValueFromKey(this.storageKeys.selectedCalendarId)
+  }
   getTimeInPast() {
     return this.getValueFromKey(this.storageKeys.timeInPast)
+  }
+  getSetupDate() {
+    return this.getValueFromKey(this.storageKeys.setupDate)
   }
   getCalendarEmail() {
     return this.getValueFromKey(this.storageKeys.calendarEmail)

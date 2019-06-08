@@ -46,7 +46,6 @@ export class ClassifierTools {
         const m2 = mathjs.matrix(matrix2);
 
         var result_matrix = mathjs.multiply(m1, m2) as MathJs.Matrix
-        console.log(result_matrix.toArray())
         return result_matrix.toArray()
     };
 
@@ -58,7 +57,6 @@ export class ClassifierTools {
         const m2 = mathjs.matrix(matrix2);
 
         var result_matrix = mathjs.add(m1, m2) as MathJs.Matrix
-        console.log(result_matrix.toArray())
         return result_matrix.toArray()
     };
 

@@ -48,14 +48,4 @@ export class ClassifierService {
     // Actual prediction
     return labels_mapping[this.get_max_score(this.score_classes(transformed_subject, coef, intercept))];
   };
-
-
-  displayJsonData() {
-    console.log("[CLASSIFIER] Displaying json objects")
-    console.log(coef)
-    console.log(idf_diag)
-    console.log(intercept)
-    console.log(labels_mapping)
-    console.log(vocabulary)
-  }
 }

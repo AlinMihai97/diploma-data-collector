@@ -5,7 +5,7 @@ import { Platform } from '@ionic/angular';
 
 export class PlatformIndependentEvent {
 
-    event_id: number;
+    event_id: string;
     title = "";
     startDate: number;
     endDate: number;
@@ -13,40 +13,72 @@ export class PlatformIndependentEvent {
     calendarName = "";
     source = "";
     attendees = [];
+    organizerEmail = ""
 
     static getEventArayFromData(data, platform: Platform): PlatformIndependentEvent[] {
         var eventArray = [];
+        console.log("From device came the following events: ")
+        console.log(data)
         data.forEach(element => {
             var event = new PlatformIndependentEvent();
 
             if (platform.is('ios')) {
-                event.title = element.title;
-                event.startDate = this.parseIosDateToUtc(element.startDate);
-                event.endDate = this.parseIosDateToUtc(element.endDate);
+                event.event_id = this.getVal(element.id) + "-sdate-" + this.parseIosDateToUtc(this.getVal(element.startDate));
+                event.title = this.getVal(element.title);
+                event.startDate = this.parseIosDateToUtc(this.getVal(element.startDate));
+                event.endDate = this.parseIosDateToUtc(this.getVal(element.endDate));
                 event.source = 'ios';
-                event.calendarName = element.calendar;
-                event.location = element.location;
-                element.attendees.forEach(attendeesElement => {
-                    event.attendees.push({
-                        status: attendeesElement.status,
-                        name: attendeesElement.name,
-                        email: attendeesElement.URL.startsWith("mailto:") ? attendeesElement.URL.substring(7) : attendeesElement,
-                        type: attendeesElement.type,
-                        role: attendeesElement.role
+                event.calendarName = this.getVal(element.calendar);
+                event.location = this.getVal(element.location);
+                event.organizerEmail = this.getVal(element.organizer).startsWith("mailto:") ? this.getVal(element.organizer).substring(7) : this.getVal(element.organizer)
+
+                if (element.attendees !== undefined) {
+                    element.attendees.forEach(attendeesElement => {
+                        if (attendeesElement !== {}) {
+                            let attendeesObj = {
+                                status: this.getVal(attendeesElement.status),
+                                name: this.getVal(attendeesElement.name),
+                                type: this.getVal(attendeesElement.type),
+                                role: this.getVal(attendeesElement.role),
+                                email: ""
+                            }
+
+                            if (attendeesElement.URL != undefined) {
+                                attendeesObj.email = attendeesElement.URL.startsWith("mailto:") ? attendeesElement.URL.substring(7) : attendeesElement
+                            }
+
+                            event.attendees.push(attendeesObj);
+                        }
+
                     });
-                });
+                }
+
 
             } else if (platform.is('android')) {
                 // remeber to implement this
             }
-
-            eventArray.push(event);
+            if (event.startDate != 0 && event.endDate != 0) {
+                eventArray.push(event);
+            }
         });
         return eventArray;
     }
 
     private static parseIosDateToUtc(iosDate: string) {
-        var date = new Date(iosDate.replace(" ", "T"));
-        return date.getTime();
+        if (iosDate === "") {
+            return 0;
+        }
+        var [date, time] = iosDate.split(" ");
+        var [hour, minutes, seconds] = time.split(":")
+        var [year, month, day] = date.split("-")
+        return new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minutes), parseInt(seconds)).getTime()
+    }
+
+    private static getVal(field) {
+        if (field !== undefined) {
+            return field
+        } else {
+            return ""
+        }
     }
 }

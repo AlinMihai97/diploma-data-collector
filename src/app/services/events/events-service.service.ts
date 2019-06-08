@@ -2,6 +2,7 @@ import { Injectable, SystemJsNgModuleLoader } from '@angular/core';
 import { PlatformIndependentEvent } from 'src/app/model/platform-independent-model';
 import { StorageService } from '../storage/storage-service.service';
 import { CalendarEvent } from 'src/app/model/event';
+import { ClassifierService } from '../classifier/classifier.service';
 
 
 
@@ -10,7 +11,7 @@ import { CalendarEvent } from 'src/app/model/event';
 })
 export class EventsService {
 
-  constructor(private storage: StorageService) {
+  constructor(private storage: StorageService, private classifier: ClassifierService) {
   }
 
   private userRelatedStorageData: any;
@@ -63,18 +64,19 @@ export class EventsService {
       let calendarEvent = new CalendarEvent();
 
       // Step one: map from PlatformIndependentEvent (device event) to CalendarEvent (api event)
-      calendarEvent.event_id = 1;
+      calendarEvent.event_id = platformEvent.event_id;
       calendarEvent.is_organizer = false;
-      calendarEvent.start_time = platformEvent.startDate;
-      calendarEvent.end_time = platformEvent.endDate;
+      calendarEvent.start_time = Math.floor(platformEvent.startDate/1000);
+      calendarEvent.end_time = Math.floor(platformEvent.endDate/1000);
       calendarEvent.location = platformEvent.location;
       // Step two: resolve user mappings
       calendarEvent.participants = [];
+      console.log("these are the event attendees: ", platformEvent.attendees)
       platformEvent.attendees.forEach(attendee => {
         if (attendee.type === undefined || attendee.type !== "Resource") {
           let part_id;
           let part_present = false;
-          let part_organizer = false;
+          let part_organizer = attendee.email == platformEvent.organizerEmail;
 
           if (attendee.status === "Accepted") { // should probably check for other types of values
             part_present = true;
@@ -88,7 +90,7 @@ export class EventsService {
             }
           }
 
-          part_id = currentAttendeeHash;
+          part_id = currentAttendeeHash + "";
 
           calendarEvent.participants.push({
             participant_id: part_id,
@@ -99,7 +101,7 @@ export class EventsService {
       });
 
       // Step three: apply topic classification
-      calendarEvent.topic = platformEvent.title;
+      calendarEvent.topic = this.classifier.classify(platformEvent.title);
       processingResult.formatedEvents.push(calendarEvent);
     });
     return processingResult;

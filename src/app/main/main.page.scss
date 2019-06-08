@@ -22,7 +22,17 @@
     ion-tab-bar {
         width: 80%;
         position: fixed;
-        bottom: 1%;
+        bottom: 3%;
         left: 10%;
     }
+}
+.some-margin {
+    margin-top: 40%;
+}
+
+.spinner-container {
+    display: flex;
+}
+.center-item {
+    margin: auto;
 }

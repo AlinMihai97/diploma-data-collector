@@ -1,9 +1,11 @@
 <ion-content>
   <div *ngFor="let event of eventList">
-    <ion-list-header *ngIf="event.header.displayed">
-      <ion-label>{{event.header.title}}</ion-label>
-    </ion-list-header>
-    <app-calendar-list-entry  [platformEvent]="event.event" [prediction]="event.prediction"></app-calendar-list-entry>
+    <ion-item-divider *ngIf="event.header.displayed">
+        <ion-label>
+            {{event.header.title}}
+        </ion-label>
+      </ion-item-divider>
+    <app-calendar-list-entry [platformEvent]="event.event" [prediction]="event.prediction"></app-calendar-list-entry>
   </div>
   
 </ion-content>

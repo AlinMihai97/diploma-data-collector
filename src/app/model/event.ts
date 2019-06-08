@@ -1,5 +1,5 @@
 export class CalendarEvent {
-    event_id: number;
+    event_id: string;
     is_organizer: boolean;
     topic: string;
     start_time: number;

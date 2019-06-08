@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 import { MainSubroutingModule } from './main-subrouting.module'
+import { SyncPageModule } from './sync/sync.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { MainSubroutingModule } from './main-subrouting.module'
     CommonModule,
     FormsModule,
     IonicModule,
-    MainSubroutingModule
+    MainSubroutingModule,
+    SyncPageModule
   ]
 })
 export class MainPageModule {}

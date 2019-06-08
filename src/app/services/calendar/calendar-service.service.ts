@@ -15,7 +15,7 @@ export class CalendarService {
     // Only returns calendar names in the system
     return new Promise((resolve, reject) => {
       this.calendar.listCalendars().then(
-      
+
         result => {
           console.log(result)
           resolve(result.map(value => value.name))
@@ -25,24 +25,27 @@ export class CalendarService {
     });
   }
 
-  getEventsFromCalendar(durationInWeeks, calendarName): Promise<PlatformIndependentEvent[]> {
+  getEventsFromCalendar(startDate: Date, endDate: Date, calendarName): Promise<PlatformIndependentEvent[]> {
     let crossPlatformEvents: PlatformIndependentEvent[] = [];
     return new Promise<PlatformIndependentEvent[]>((resolve, reject) => {
       if (this.plt.is('ios')) {
-        
-        this.calendar.findAllEventsInNamedCalendar(calendarName, new Date('2019-01-01T00:00:00'), new Date()).then(data => {
-          crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
+        console.log("here1")
+        let options = this.calendar.getCalendarOptions()
+        options.calendarName = calendarName
+        this.calendar.findEventWithOptions("", "", "", startDate, endDate, options).then(
+          data => {
+            console.log("here2")
+            crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
 
-          // process cross platform events in some way in order to get data just in the required timespan
-
-          resolve(crossPlatformEvents);
-        },
+            // process cross platform events in some way in order to get data just in the required timespan
+            resolve(crossPlatformEvents);
+          },
           error => reject(error)
-        );
+        )
       } else if (this.plt.is('android')) {
         // reject("Android event retrival not yet implemented");
 
-        var options : CalendarOptions = {
+        var options: CalendarOptions = {
           calendarName: calendarName
         }
         options.calendarId = 1

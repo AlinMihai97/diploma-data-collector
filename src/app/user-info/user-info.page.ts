@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { StorageService } from '../services/storage/storage-service.service';
+import { UserProfileService } from '../services/user-profile-service/user-profile.service';
 
 @Component({
   selector: 'app-user-info',
@@ -12,6 +13,8 @@ export class UserInfoPage implements OnInit {
   name = "Vadim Tudor"
   info = "Presedintele Romaniei"
   keys = []
+  avatarUrl = "https://mediastiriv1.freenode.ro/image/201509/w295h180/media-144264794796847100.jpg"
+
 
   userInfo = {
     // Personal info
@@ -37,7 +40,7 @@ export class UserInfoPage implements OnInit {
     }
   }
 
-  constructor(private plt: Platform, private storage: StorageService) {
+  constructor(private plt: Platform, private storage: StorageService, private userProfile: UserProfileService) {
     this.keys = Object.keys(this.userInfo)
 
     if (!this.plt.is("mobile")) {
@@ -61,6 +64,20 @@ export class UserInfoPage implements OnInit {
         }
       )
     }
+
+    this.userProfile.getUserAvatarUrl().then(
+      avatarUrl => {
+        this.avatarUrl = avatarUrl
+      },
+      error => console.log(error)
+    )
+
+    this.userProfile.getUserDisplayName().then(
+      profileName => {
+        this.name = profileName
+      },
+      error => console.log(error)
+    )
   }
 
   setError() {
