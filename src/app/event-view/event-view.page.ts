@@ -242,7 +242,7 @@ export class EventViewPage implements OnInit {
   }
 
   private sendFeedback() {
-    // send data to server on success run the code
+    // send data to server on success run this code
     this.feedback.forEach(fb => {
       fb.foundValue = fb.value
     })

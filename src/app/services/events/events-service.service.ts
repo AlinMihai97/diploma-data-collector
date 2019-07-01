@@ -1,4 +1,4 @@
-import { Injectable, SystemJsNgModuleLoader } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { PlatformIndependentEvent } from 'src/app/model/platform-independent-model';
 import { StorageService } from '../storage/storage-service.service';
 import { CalendarEvent } from 'src/app/model/event';
@@ -69,32 +69,54 @@ export class EventsService {
       newMapping: currentAttendeeMappings
     }
 
-    let organizerFound = false
-
     events.forEach(platformEvent => {
       // Three step algorithm
       let calendarEvent = new CalendarEvent();
 
       // Step one: map from PlatformIndependentEvent (device event) to CalendarEvent (api event)
       calendarEvent.event_id = platformEvent.event_id;
-      calendarEvent.is_organizer = platformEvent.organizerEmail == this.userEmail;
-
       calendarEvent.start_time = Math.floor(platformEvent.startDate / 1000);
       calendarEvent.end_time = Math.floor(platformEvent.endDate / 1000);
       calendarEvent.last_modified = Math.floor(platformEvent.lastModified / 1000);
-      
+
       calendarEvent.location = platformEvent.location;
       // Step two: resolve user mappings
       calendarEvent.participants = [];
+
+      // search for organizer in the attendees list
+      calendarEvent.is_organizer = false
+
+      let attendesArray = platformEvent.attendees
+      let foundAtt = attendesArray.find(attendee => {
+        return attendee.email === platformEvent.organizerEmail
+      })
+
+      if (foundAtt == undefined) {
+        // organizer not found in the attendes list, adding him now, he will be found as organizer
+
+        if (platformEvent.organizerEmail !== this.userEmail) {
+          attendesArray.push({
+            type: "Organizer",
+            email: platformEvent.organizerEmail,
+            name: "organizer",
+            status: "1"
+          })
+        } else {
+          calendarEvent.is_organizer = true
+        }
+      } else if (foundAtt.email === this.userEmail) {
+        calendarEvent.is_organizer = true
+        // if the organizer is found in the attendees and the organizer is the user then we set him as organizer and don't add him to the list because he will be removed anyway
+      }
+
       console.log("these are the event attendees: ", platformEvent.attendees)
-      platformEvent.attendees.forEach(attendee => {
+      attendesArray.forEach(attendee => {
         if (attendee.type !== "Resource") {
           if (attendee.email != this.userEmail) {
             let part_id;
             let part_present = false;
             let part_organizer = attendee.email == platformEvent.organizerEmail;
 
-            organizerFound = part_organizer
 
             if (attendee.status === "Accepted" || attendee.status == "1") { // should probably check for other types of values
               part_present = true;
@@ -122,8 +144,8 @@ export class EventsService {
         }
       });
 
-      if (calendarEvent.participants.length === 0 || !organizerFound) {
-        // There are no participants in the list or no organizer found in the attendees that means that the event must be created by the user so we are adding user as organizer
+      if (calendarEvent.participants.length === 0) {
+        // There are no participants in the list that means that the event must be created by the user
         calendarEvent.is_organizer = true
       }
 
