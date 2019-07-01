@@ -1,11 +1,15 @@
 <ion-content>
-  <div *ngFor="let event of eventList">
-    <ion-item-divider *ngIf="event.header.displayed">
+  <div class="event-schedule-container">
+    <div *ngFor="let day of eventsPerDay" class="schedule-day-card">
+      <ion-item-divider class="header">
         <ion-label>
-            {{event.header.title}}
+          {{day.headerTime}}
         </ion-label>
       </ion-item-divider>
-    <app-calendar-list-entry [platformEvent]="event.event" [prediction]="event.prediction"></app-calendar-list-entry>
+      <div *ngFor="let event of day.eventsInDay" class="event-entry">
+        <app-calendar-list-entry [platformEvent]="event.event" [prediction]="event.prediction">
+        </app-calendar-list-entry>
+      </div>
+    </div>
   </div>
-  
 </ion-content>

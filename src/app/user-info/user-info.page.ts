@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { StorageService } from '../services/storage/storage-service.service';
 import { UserProfileService } from '../services/user-profile-service/user-profile.service';
+import { Router } from '@angular/router';
+import { StressDetectorApiService } from '../services/stress-detector-api/stress-detector-api-service.service';
+import { appInitialize } from '@ionic/angular/dist/app-initialize';
 
 @Component({
   selector: 'app-user-info',
@@ -11,7 +14,6 @@ import { UserProfileService } from '../services/user-profile-service/user-profil
 export class UserInfoPage implements OnInit {
 
   name = "Vadim Tudor"
-  info = "Presedintele Romaniei"
   keys = []
   avatarUrl = "https://mediastiriv1.freenode.ro/image/201509/w295h180/media-144264794796847100.jpg"
 
@@ -31,7 +33,7 @@ export class UserInfoPage implements OnInit {
       value: ""
     },
     setupDate: {
-      fieldName: "Last sync date",
+      fieldName: "App setup date",
       value: ""
     },
     calendarEmail: {
@@ -40,7 +42,7 @@ export class UserInfoPage implements OnInit {
     }
   }
 
-  constructor(private plt: Platform, private storage: StorageService, private userProfile: UserProfileService) {
+  constructor(private api: StressDetectorApiService, private router: Router, private plt: Platform, private storage: StorageService, private userProfile: UserProfileService) {
     this.keys = Object.keys(this.userInfo)
 
     if (!this.plt.is("mobile")) {
@@ -55,7 +57,11 @@ export class UserInfoPage implements OnInit {
             this.setError()
           } else {
             this.keys.forEach((key) => {
-              this.userInfo[key].value = info[key]
+              if (key == "setupDate") {
+                this.userInfo[key].value = new Date(info[key]).toString()
+              } else {
+                this.userInfo[key].value = info[key]
+              }
             });
           }
         },
@@ -89,5 +95,28 @@ export class UserInfoPage implements OnInit {
   ngOnInit() {
   }
 
+  resetApp() {
+    this.storage.getUserId().then(
+      userId => {
+        this.api.deleteUser(userId).then(
+          result => {
+            if (result) {
+              this.storage.clearUserData().then(
+                result => {
+                  this.router.navigate(["home"])
+                },
+                error => console.log("Error clearing storage data")
+              )
+            } else {
+              console.log("Error deleting user from API")
+            }
+          },
+          error => console.log("Error deleting user from API")
+        )
+      },
+      error => console.log("Error getting user_id")
+    )
+
+  }
 
 }

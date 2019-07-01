@@ -1,1 +1,22 @@
+.heart {
+    margin: 5em;
+    animation: .8s infinite beatHeart;
+    width: 50px;
+    height: 40px;
+  }
+  
+  @keyframes beatHeart {
+    0% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(1.1);
+    }
+    60% {
+      transform: scale(1);
+    }
 
+    100% {
+        transform: scale(1);
+      }
+  }

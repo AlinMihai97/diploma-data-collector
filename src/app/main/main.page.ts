@@ -17,7 +17,7 @@ export class MainPage implements OnInit {
   globalCalendarEventsArray: InterfaceEventInfo[] = []
 
   predictionOffset = 2000 // Number of millis to wait in addition to prediction ETA
-  predictionMaxRetries = 5 // Number of tries to retry getting the prediction
+  predictionMaxRetries = 3 // Number of tries to retry getting the prediction
 
   firstSyncInProgress = false
 
@@ -57,7 +57,7 @@ export class MainPage implements OnInit {
         this.eventManager.getCurrentSetupPrediction().then(
           prediction => {
             this.DEBUG("Got the following prediciton data: ", prediction)
-            if (prediction.ETA >= 0) {
+            if (prediction.ETA > 0) {
               if (maxNumPredictionRetries > 0) {
                 this.DEBUG("Retring acquiring prediciton try no. " + (this.predictionMaxRetries - maxNumPredictionRetries + 1), undefined)
                 setTimeout(() => {
@@ -65,6 +65,13 @@ export class MainPage implements OnInit {
                 }, this.predictionOffset + prediction.ETA * 1000)
               } else {
                 // Here I should generate some mock predictions just for display
+                this.globalCalendarEventsArray.forEach(event => {
+                  event.prediction.eventWithPrediction = event.deviceEvent.startDate > new Date().getTime()
+                  event.prediction.hasPrediction = true
+                  event.prediction.value = Math.floor(Math.random() * 100) % 26; 
+                })
+                // Trigger data refresh
+                this.globalCalendarEventsArray = this.globalCalendarEventsArray
               }
             } else {
               this.DEBUG("Got prediction, updating interface events", undefined)
@@ -79,17 +86,18 @@ export class MainPage implements OnInit {
     )
   }
 
-  // Navigation methods
+  
   ionViewWillEnter() {
-    this.menu.close('first')
+    // this.menu.close('first')
   }
 
+  // Navigation methods
   navigateToUserInfo() {
     this.router.navigateByUrl("/user-info")
   }
 
   navigateToSettings() {
-
+    console.log("No settings yet")
   }
 
   navigateToAbout() {
@@ -108,10 +116,16 @@ export class MainPage implements OnInit {
     return await modal.present();
   }
 
+
+
+  currentTab = 0
+  tabList = ['schedule', 'week', 'month']
+
   tab = 'schedule';
   show(tab) {
     this.tab = tab;
   }
+
 
   DEBUG(message: string, value: any) {
     console.log("[MAIN PAGE]: " + message)
@@ -119,4 +133,23 @@ export class MainPage implements OnInit {
       console.log(value)
     }
   }
+
+
+  slideOpts = {
+    initialSlide: 1,
+    speed: 400,
+    slideNextTransitionStart: () => {
+      if (this.currentTab != 2) {
+        this.currentTab++
+        this.tab = this.tabList[this.currentTab]
+      }
+    },
+    slidePrevTransitionStart: () => {
+      if (this.currentTab != 0) {
+        this.currentTab--
+        this.tab = this.tabList[this.currentTab]
+      }
+    }
+  };
+
 }

@@ -14,7 +14,6 @@
     </ion-avatar>
     <ion-label>
       <p class="attribute-name-header">{{name}}</p>
-      <p class="attribute-value-header">{{info}}</p>
     </ion-label>
   </ion-item>
   <ion-list>
@@ -25,5 +24,13 @@
       </div>
     </ion-item>
   </ion-list>
+
+  <ion-item lines="none">
+    <ion-button class="reset-button" (click)="resetApp()">
+      <ion-label>
+        Reset app
+      </ion-label>
+    </ion-button>
+  </ion-item>
 
 </ion-content>

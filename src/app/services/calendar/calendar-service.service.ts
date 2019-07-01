@@ -25,16 +25,15 @@ export class CalendarService {
     });
   }
 
-  getEventsFromCalendar(startDate: Date, endDate: Date, calendarName): Promise<PlatformIndependentEvent[]> {
+  getEventsFromCalendar(startDate: Date, endDate: Date, calendarName, calendarId): Promise<PlatformIndependentEvent[]> {
     let crossPlatformEvents: PlatformIndependentEvent[] = [];
     return new Promise<PlatformIndependentEvent[]>((resolve, reject) => {
-      if (this.plt.is('ios')) {
-        console.log("here1")
+      if (this.plt.is('ios') || this.plt.is('android')) {
         let options = this.calendar.getCalendarOptions()
         options.calendarName = calendarName
+        options.calendarId = calendarId
         this.calendar.findEventWithOptions("", "", "", startDate, endDate, options).then(
           data => {
-            console.log("here2")
             crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
 
             // process cross platform events in some way in order to get data just in the required timespan
@@ -42,28 +41,6 @@ export class CalendarService {
           },
           error => reject(error)
         )
-      } else if (this.plt.is('android')) {
-        // reject("Android event retrival not yet implemented");
-
-        var options: CalendarOptions = {
-          calendarName: calendarName
-        }
-        options.calendarId = 1
-        //Maybe this one
-        // this.calendar.listEventsInRange()
-
-        this.calendar.findEventWithOptions(null, null, null, new Date('2019-01-01T00:00:00'), new Date(), options).then(result => {
-          console.log("FROM ANDROID CAME THE FOLLOWING DATA: ")
-          console.log(result)
-        });
-
-        //Reimplement all Android logic
-        // let start = new Date();
-        // let end = new Date();
-        // end.setDate(end.getDate() + 31);
-
-        // this.calendar.listEventsInRange(start, end).then(data => {
-        //   this.crossPlatformEvents = PlatformIndependentEvent.getEventArayFromData(data, this.plt)
       }
     });
   }

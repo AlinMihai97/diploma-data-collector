@@ -13,9 +13,26 @@
       <ion-spinner class="center-item" name="crescent"></ion-spinner>
     </ion-item>
   </div>
+  <div *ngIf="displayError">
+    <ion-item>
+      <ion-label text-center>
+        Sync error
+      </ion-label>
+    </ion-item>
+    <ion-button color="danger" expand="block" class="center-item" (click)="closeModal()">
+      Go back to Main Page
+    </ion-button>
+  </div>
   <div *ngIf="loadingFinished">
     <ion-item *ngFor="let message of messagesArray" lines="none">
-      <ion-label>{{message}}</ion-label>
+      <ion-label>
+        <div class="bolded-text">
+          {{message.text}}
+        </div>
+        <div>
+          {{message.value}}
+        </div>
+      </ion-label>
     </ion-item>
     <ion-button [disabled]="!loadingFinished" expand="block" class="center-item" (click)="closeModal()">
       Go back to Main Page

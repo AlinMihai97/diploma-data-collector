@@ -1,0 +1,72 @@
+<ion-content>
+  <!-- <div class="alert alert-info">
+    For details on how to customise any of the templates, please see
+    <a href="https://github.com/mattlewis92/angular-calendar#how-do-i-use-a-custom-template">this guide</a>
+  </div> -->
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+      <ion-col size='4' text-center>
+        <div (click)="backOneMonth()" center>
+          <ion-icon size="large" name="arrow-dropleft-circle"></ion-icon>
+        </div>
+      </ion-col>
+      <ion-col size='4' text-center>
+        <ion-label>
+          {{currentMonth}}
+        </ion-label>
+      </ion-col>
+      <ion-col size='4' text-center>
+        <div (click)="forwardOneMonth()" center>
+          <ion-icon size="large" name="arrow-dropright-circle"></ion-icon>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ng-template #myHeader>
+    Test
+  </ng-template>
+
+  <ng-template #customCellTemplate let-day="day" let-locale="locale">
+    <div class="cal-cell-top">
+      <div class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</div>
+      <div class="cal-day-badge" *ngIf="day.badgeTotal > 0"></div>
+      <!-- {{ day.badgeTotal }} -->
+    </div>
+  </ng-template>
+
+  <mwl-calendar-month-view [viewDate]="viewDate" [events]="events" [cellTemplate]="customCellTemplate"
+    [headerTemplate]="headerTemplate" [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+    (eventClicked)="handleEvent('Clicked', $event.event)" [openDayEventsTemplate]="myOpenDayEventsTemplate">
+  </mwl-calendar-month-view>
+
+  <ng-template #headerTemplate let-days="days" let-locale="locale">
+    <div class="cal-cell-row cal-header header-class">
+      <div class="cal-cell cell-class" *ngFor="let day of days" [class.cal-past]="day.isPast"
+        [class.cal-future]="day.isFuture" [class.today]="day.isToday">
+        <div class="top header-text">
+          <div class="allign">{{ getShortDayNameFromDate(day.date)}}</div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #myOpenDayEventsTemplate let-events="events" let-eventClicked="eventClicked" let-isOpen="isOpen">
+    <div class="cal-open-day-events" [@collapse] *ngIf="isOpen">
+      <div *ngFor="let event of events; trackBy:trackByEventId"
+        (click)="navigateToEvent(event.meta.deviceEvent.event_id)" [ngClass]="event?.cssClass">
+        <span class="cal-event" [style.backgroundColor]="event.color?.primary">
+        </span>
+        <!-- <mwl-calendar-event-title [event]="event" [customTemplate]="eventTitleTemplate" view="month"
+          (mwlClick)="eventClicked.emit({event: event})">
+        </mwl-calendar-event-title> -->
+        <span>{{event.meta.deviceEvent.title}}</span>
+        <span> {{getHours(event.meta.deviceEvent)}}</span>
+        <span *ngIf="event.meta.prediction.hasPrediction"> +{{event.meta.prediction.value}}</span>
+        <ion-icon *ngIf="event.meta.prediction.hasPrediction" class="font-of-heart" src="assets/icon/inima_rosie.svg">
+        </ion-icon>
+        <ion-icon *ngIf="!event.meta.prediction.hasPrediction" class="font-of-heart black"
+          src="assets/icon/inima_neagra.svg"></ion-icon>
+      </div>
+    </div>
+  </ng-template>
+</ion-content>

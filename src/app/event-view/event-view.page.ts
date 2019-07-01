@@ -23,9 +23,54 @@ export class EventViewPage implements OnInit {
     attendessInfo: [],
     apiTopic: "",
     eventId: "",
-    prediction: -200
+    prediction: {
+      eventWithPrediction: false,
+      hasPrediction: false,
+      value: 0
+    },
+    is_organizer: true,
   }
 
+  feedback = [
+    {
+      headerName: "Overall stress",
+      feedbackField: "overall",
+      value: 0,
+      foundValue: 0
+    },
+    {
+      headerName: "Starting time stress",
+      feedbackField: "start_time",
+      value: 0,
+      foundValue: 0
+    },
+    {
+      headerName: "Ending time stress",
+      feedbackField: "end_time",
+      value: 0,
+      foundValue: 0
+    },
+    {
+      headerName: "How stressful is the topic?",
+      feedbackField: "topic",
+      value: 0,
+      foundValue: 0
+    },
+    {
+      headerName: "How stressful is the location?",
+      feedbackField: "location",
+      value: 0,
+      foundValue: 0
+    },
+    {
+      headerName: "How stressed do you feel as an organizer?",
+      feedbackField: "is_organizer",
+      value: 0,
+      foundValue: 0
+    }
+  ]
+
+  feedbackButtonDisabled = true
   shouldDisplayTwoDates: boolean = false
 
   daysOfWeek = [
@@ -135,8 +180,11 @@ export class EventViewPage implements OnInit {
               this.event.eventId = this.interfaceEvent.apiEvent.event_id
 
               if (this.interfaceEvent.prediction.hasPrediction) {
-                this.event.prediction = this.interfaceEvent.prediction.value
+                this.event.prediction = this.interfaceEvent.prediction
               }
+              this.event.is_organizer = this.interfaceEvent.apiEvent.is_organizer
+
+              this.initFeedback()
             }
           },
           error => console.log(error)
@@ -167,5 +215,37 @@ export class EventViewPage implements OnInit {
     }
 
     return returnValue + Math.floor(offset / 60) + ":" + this.getMinutesString(offset % 60)
+  }
+
+  private initFeedback() {
+    // get data from server
+    this.feedback.forEach(fb => {
+      fb.value = 0
+      fb.foundValue = 0
+    })
+  }
+
+  private feedbackChanged() {
+    let valuesDiffer = false
+    this.feedback.forEach(fb => {
+      if (fb.value !== fb.foundValue) {
+        valuesDiffer = true
+      }
+    })
+
+    if(valuesDiffer) {
+      this.feedbackButtonDisabled = false
+    } else {
+      this.feedbackButtonDisabled = true
+    }
+
+  }
+
+  private sendFeedback() {
+    // send data to server on success run the code
+    this.feedback.forEach(fb => {
+      fb.foundValue = fb.value
+    })
+    this.feedbackButtonDisabled = true
   }
 }

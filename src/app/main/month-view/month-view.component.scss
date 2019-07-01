@@ -1,0 +1,65 @@
+.cal-month-view .cal-day-cell {
+    height: 10vh;
+    text-align: center;
+}
+
+.cal-month-view .cal-day-cell.cal-today .cal-day-number {
+    font-size: 1em;
+}
+
+.cal-month-view .cal-day-number {
+    font-size: 1.2em;
+    font-weight: 400;
+    opacity: 0.5;
+    margin-right: 0px;
+    float: none;
+    margin-top: 2px;
+}
+
+.cal-month-view .cal-day-cell.cal-today {
+    background-color: #e0effe;
+    color: #002A3A;
+}
+
+.cal-month-view .cal-day-badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 0.9em;
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-radius: 10px;
+    }
+
+.header-text {
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.cell-class {
+    background-color: #002A3A;
+    min-height: 40px;
+}
+
+.header-class {
+    border-radius: 10px 10px 0px 0px;
+    -moz-border-radius:10px 10px 0px 0px;
+    -webkit-border-radius:10px 10px 0px 0px;
+    overflow: hidden;
+    border-width: 0px;
+}
+
+.allign {
+    vertical-align: middle;
+    display: inline-block;   
+}
+
+.font-of-heart {
+    font-size: 12px;
+}
+
+.black {
+    color: black;
+}

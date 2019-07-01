@@ -6,7 +6,6 @@ import { IonicModule } from '@ionic/angular';
 import { MainSubroutingModule } from './main-subrouting.module'
 import { SyncPageModule } from './sync/sync.module';
 
-
 @NgModule({
   imports: [
     CommonModule,
@@ -16,4 +15,4 @@ import { SyncPageModule } from './sync/sync.module';
     SyncPageModule
   ]
 })
-export class MainPageModule {}
+export class MainPageModule { }

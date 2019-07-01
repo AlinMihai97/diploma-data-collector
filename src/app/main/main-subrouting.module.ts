@@ -9,6 +9,10 @@ import { FormsModule } from '@angular/forms';
 
 import { CalendarListViewComponent } from './calendar-list-view/calendar-list-view.component';
 import { CalendarListEntryComponent } from './calendar-list-entry/calendar-list-entry.component';
+import { MonthViewComponent } from './month-view/month-view.component';
+import { WeekViewComponent } from './week-view/week-view.component';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 const routes: Routes = [
   {
@@ -22,9 +26,13 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    })
   ],
   exports: [RouterModule],
-  declarations: [MainPage, CalendarListViewComponent, CalendarListEntryComponent]
+  declarations: [MainPage, CalendarListViewComponent, CalendarListEntryComponent, MonthViewComponent, WeekViewComponent]
 })
-export class MainSubroutingModule {}
+export class MainSubroutingModule { }

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PlatformIndependentEvent } from 'src/app/model/platform-independent-model';
 import { Router } from '@angular/router';
+import { Prediction } from 'src/app/model/prediction';
 
 @Component({
   selector: 'app-calendar-list-entry',
@@ -20,15 +21,20 @@ export class CalendarListEntryComponent implements OnInit {
 
 
 
-  private _prediction: Number = 0
+  private _prediction: any
   @Input()
-  set prediction(prediction: Number) {
+  set prediction(prediction: any) {
     this._prediction = prediction
+    this.hasPrediction = prediction.eventWithPrediction
+    this.hasLoadedPrediction = prediction.eventWithPrediction && prediction.hasPrediction
+    this.predictionValue = prediction.value
 
   }
-  get prediction(): Number { return this._prediction; }
+  get prediction(): any { return this._prediction; }
 
-
+  hasPrediction: boolean
+  hasLoadedPrediction: boolean
+  predictionValue: number
 
   timeInterval: String = ""
   title: String = ""
@@ -47,8 +53,8 @@ export class CalendarListEntryComponent implements OnInit {
 
 
     returnedInterval += startDate.getHours() + ":" + this.getMinutesString(startDate.getMinutes()) + " - "
-    returnedInterval += endDate.getHours() + ":" + this.getMinutesString(endDate.getMinutes()) + " "
-    returnedInterval += this.getTimeZoneStirng(endDate.getTimezoneOffset())
+    returnedInterval += endDate.getHours() + ":" + this.getMinutesString(endDate.getMinutes())
+    // returnedInterval += this.getTimeZoneStirng(endDate.getTimezoneOffset())
 
     return returnedInterval
   }

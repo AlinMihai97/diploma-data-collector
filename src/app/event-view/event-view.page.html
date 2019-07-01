@@ -14,7 +14,7 @@
       Basic event info
     </ion-label>
   </ion-item-divider>
-  <ion-item lines="none">
+  <ion-item lines="none" *ngIf="event.location != ''">
     <ion-icon name="pin" slot="start"></ion-icon>
     <ion-label text-wrap slot="start">{{event.location}}</ion-label>
   </ion-item>
@@ -29,20 +29,22 @@
       </div>
     </ion-label>
   </ion-item>
-  <ion-item lines="none" *ngIf="event.prediction > -200">
-    <ion-icon name="heart" slot="start"></ion-icon>
-    <ion-label text-wrap>Predicted heart rate delta: {{event.prediction}}</ion-label>
+  <ion-item lines="none" *ngIf="event.prediction.hasPrediction">
+    <ion-icon slot="start" src="assets/icon/inima_rosie.svg"></ion-icon>
+    <ion-label text-wrap>Predicted heart rate delta: {{event.prediction.value}}</ion-label>
   </ion-item>
   <ion-item lines="none">
     <ion-icon name="calendar" slot="start"></ion-icon>
-    <ion-label text-wrap>{{event.calendar}}</ion-label>
-  </ion-item>
-  <ion-item-divider *ngIf="event.attendessInfo.length > 0 || event.organizer !== ''">
-    <ion-label>
-      Event participants
+    <ion-label text-wrap>
+      <div class="bolded-text">
+        Calendar name
+      </div>
+      <div>
+        {{event.calendar}}
+      </div>
     </ion-label>
-  </ion-item-divider>
-  <ion-item lines="full">
+  </ion-item>
+  <ion-item lines="full" *ngIf="event.organizer != ''">
     <ion-icon name="people" slot="start"></ion-icon>
     <ion-label text-wrap>
       <div class="bolded-text">
@@ -53,6 +55,12 @@
       </div>
     </ion-label>
   </ion-item>
+  <ion-item-divider *ngIf="event.attendessInfo.length > 0 || event.organizer !== ''">
+    <ion-label>
+      Event participants
+    </ion-label>
+  </ion-item-divider>
+
   <ion-list *ngIf="event.attendessInfo.length > 0">
     <ion-item *ngFor="let attendee of event.attendessInfo" lines="full">
       <ion-label slot="start" text-wrap class="sloted-fix-left">
@@ -96,4 +104,28 @@
       </div>
     </ion-label>
   </ion-item>
+
+  <ion-item-divider *ngIf="!event.prediction.hasPrediction">
+    <ion-label>
+      Event feedback
+    </ion-label>
+  </ion-item-divider>
+  <div *ngIf="!event.prediction.hasPrediction">
+    <ion-item lines="none" *ngFor="let fb of feedback">
+      <ion-label text-wrap *ngIf="fb.feedbackField != 'is_organizer' || event.is_organizer">
+        <div class="bolded-text">
+          {{fb.headerName}}
+        </div>
+        <div>
+          <ion-range color="danger" snaps="true" [(ngModel)]="fb.value" name="fb.headerName" ticks="true" pin="true" min="0" max="5" (ionChange)="feedbackChanged()"></ion-range>
+        </div>
+      </ion-label>
+    </ion-item>
+  </div>
+  <ion-item lines="none" *ngIf="!event.prediction.hasPrediction" class="last-element">
+    <ion-button text-wrap class="submit-button" [disabled]="feedbackButtonDisabled" (click)="sendFeedback()">
+      Submit feedback
+    </ion-button>
+  </ion-item>
+
 </ion-content>

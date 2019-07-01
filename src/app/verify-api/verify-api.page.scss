@@ -1,17 +1,59 @@
-.spinner-postion {
-    position: absolute;
-    top: 40%;
-    left: 47%;
+.global-container {
+    background-color: #e0effe;
+    width: 100vw;
+    height: 100vh;
+    color: #FFFFFF;
+    overflow: hidden;
 }
 
-.action-message {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    top: 45%;
+.spinner-container {
     display: flex;
+    font-weight: bold;
+    margin-top: 5vh;
 }
 
-.action-message > ion-label {
+.center-item {
     margin: auto;
+}
+
+.some-margin {
+    padding-top: 20vh;
+}
+
+.attribute-name-header {
+    max-width: 45vw;
+    display: block;
+    font-weight: bold;
+    font-size: 24px;
+    max-height: 15vh;
+    margin: 0 auto;
+}
+
+.user-profile-pic {
+    height: 100px;
+    width: 100px;
+}
+
+.slide-bottom {
+    margin: 100vh 0px 0px 0px;
+}
+
+.slide-left {
+    margin: 0px 0px 0px 100vw;
+}
+
+.slide-right {
+    margin: 0px 100vw 0px 0px;
+}
+
+.dispaly {
+    margin: 0px;
+}
+
+.slide-bottom, .slide-left, .slide-right, .dispaly {
+    transition: margin 0.5s ease-out;
+}
+
+.label {
+    width: 100%;
 }

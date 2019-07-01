@@ -6,6 +6,7 @@ import { StressDetectorApiService } from '../services/stress-detector-api/stress
 import { User } from '../model/user';
 import { reject } from 'q';
 import { Calendar } from '../model/calendar';
+import { UserProfileService } from '../services/user-profile-service/user-profile.service';
 
 @Component({
   selector: 'app-verify-api',
@@ -14,6 +15,9 @@ import { Calendar } from '../model/calendar';
 })
 export class VerifyApiPage implements OnInit {
 
+  avatarUrl = ""
+  username = "Username"
+  disp: boolean = false
   actionMessage = ""
   actionMessageIndex = 0
   actionMessageList = [
@@ -27,38 +31,55 @@ export class VerifyApiPage implements OnInit {
     "Adding calendar on API"
   ]
 
-  constructor(private auth: AuthService, private storage: StorageService, private router: Router, private api: StressDetectorApiService) {
+  constructor(private profile: UserProfileService, private auth: AuthService, private storage: StorageService, private router: Router, private api: StressDetectorApiService) {
+    this.disp = false
     this.setActionMessage(0)
-    this.checkTokenStatus().then(
-      succes => {
-        if (succes) {
-          this.checkUserIdStatus().then(
-            succes => {
-              if (succes) {
-                this.checkUserApiStatus().then(
-                  succes => {
-                    if (succes) {
-                      
-                      this.checkCalendarStatus().then(
-                        succes => {
-                          if(succes) {
-                            this.router.navigate(["main"])
-                          }
-                        },
-                        error => reject(error)
-                      )
-                    }
-                  },
-                  error => reject(error)
-                )
-              }
-            },
-            error => reject(error)
-          )
-        }
-      },
-      error => reject(error)
+    this.profile.getUserAvatarUrl().then(
+      avatarUrl => {
+        this.avatarUrl = avatarUrl
+        this.profile.getUserDisplayName().then(
+          username => {
+            this.username = "Welcome back " + username
+            this.disp = true
+            this.checkTokenStatus().then(
+              succes => {
+                if (succes) {
+                  this.checkUserIdStatus().then(
+                    succes => {
+                      if (succes) {
+                        this.checkUserApiStatus().then(
+                          succes => {
+                            if (succes) {
+
+                              this.checkCalendarStatus().then(
+                                succes => {
+                                  if (succes) {
+                                    this.disp = false
+                                    setTimeout(() => {
+                                      this.router.navigate(["main"], { replaceUrl: true })
+                                    }, 1000)  
+                                    
+                                  }
+                                },
+                                error => reject(error)
+                              )
+                            }
+                          },
+                          error => reject(error)
+                        )
+                      }
+                    },
+                    error => reject(error)
+                  )
+                }
+              },
+              error => reject(error)
+            )
+          }
+        )
+      }
     )
+
   }
 
   ngOnInit() {

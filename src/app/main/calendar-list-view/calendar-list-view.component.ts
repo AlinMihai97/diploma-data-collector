@@ -46,13 +46,9 @@ export class CalendarListViewComponent implements OnInit {
     globalCalendarEventsArray.forEach(event => {
       this.eventList.push({
         event: event.deviceEvent,
-        prediction: event.prediction.hasPrediction ? event.prediction.value : "NoPre",
-        header: {
-          displayed: false,
-          title: "Some day"
-        }
+        prediction: event.prediction
       })
-      this.initHeaders()
+      this.initList()
     })
     console.log(this.eventList)
   }
@@ -61,28 +57,43 @@ export class CalendarListViewComponent implements OnInit {
   ngOnInit() {
 
   }
-  initHeaders() {
-    this.headers = []
+  initList() {
+    this.eventsPerDay = []
     this.eventList.sort((a, b) => {
       return a.event.startDate - b.event.startDate
     }).forEach((event) => {
-      let processedDate = this.processDateForEvent(event.event)
-      event.header.title = processedDate
+      let deviceEvent = event.event
+      let currentEventProcessedDate = this.processDateForEvent(deviceEvent)
+      // Search for event in current list
+      let foundIndex = -1;
 
-      let searchedDate = this.headers.find(header => {
-        return header == processedDate
+      let searchedDay = this.eventsPerDay.find((dayEvent, index) => {
+        if(dayEvent.headerTime == currentEventProcessedDate) {
+          foundIndex = index
+          return true 
+        }
+        return false
       })
 
-      if(searchedDate === undefined) {
-        event.header.displayed = true
-        this.headers.push(processedDate)
+      if(searchedDay !== undefined) {
+        this.eventsPerDay[foundIndex].eventsInDay.push(event)
       } else {
-        event.header.displayed = false
+        this.eventsPerDay.push({
+          headerTime: currentEventProcessedDate,
+          eventsInDay: [event]
+        })
       }
+    
     })
   }
 
   eventList = []
+
+  eventsDaysIndex = 0
+  eventsPerDay: {
+    headerTime: string,
+    eventsInDay: any[]
+  }[] = []
 
   private headers: string[] = []
 

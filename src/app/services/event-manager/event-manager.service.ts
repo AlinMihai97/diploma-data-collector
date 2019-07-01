@@ -44,7 +44,7 @@ export class EventManagerService {
 
       this.api.detectInInterval(this.userDetail.user_id, this.userDetail.calendarId, minTime, maxTime).then(
         prediction => {
-          console.log("Got the following prediction: ")
+          console.log("Got the following prediction data: ")
           console.log(prediction)
           resolve(prediction)
         },
@@ -67,41 +67,47 @@ export class EventManagerService {
         }
         newInterfaceEventArray.push(event)
       })
+      this.globalCalendarEventsArray = newInterfaceEventArray
       return newInterfaceEventArray
     }
   }
 
   getGlobalCalendarEventsArray() {
     return new Promise<InterfaceEventInfo[]>((resolve, reject) => {
-      this.getDeviceEvents().then(
-        deviceEvents => {
-          this.getApiEvents().then(
-            apiEvents => {
-              this.globalCalendarEventsArray = []
-              deviceEvents.forEach(deviceEvent => {
-                let foundApiEvent = apiEvents.find(apiEvent => {
-                  return apiEvent.event_id == deviceEvent.event_id
+      if(this.globalCalendarEventsArray.length == 0) {
+        this.getDeviceEvents().then(
+          deviceEvents => {
+            this.getApiEvents().then(
+              apiEvents => {
+                this.globalCalendarEventsArray = []
+                deviceEvents.forEach(deviceEvent => {
+                  let foundApiEvent = apiEvents.find(apiEvent => {
+                    return apiEvent.event_id == deviceEvent.event_id
+                  })
+  
+                  // AT THIS POINT WE SHOULD GET THE PREDICTION
+                  let interfaceEvent = new InterfaceEventInfo()
+                  interfaceEvent.deviceEvent = deviceEvent
+                  interfaceEvent.apiEvent = foundApiEvent
+                  interfaceEvent.prediction = {
+                    eventWithPrediction: deviceEvent.startDate >= new Date().getTime(),
+                    hasPrediction: false,
+                    value: -500
+                  }
+  
+                  this.globalCalendarEventsArray.push(interfaceEvent)
                 })
-
-                // AT THIS POINT WE SHOULD GET THE PREDICTION
-                let interfaceEvent = new InterfaceEventInfo()
-                interfaceEvent.deviceEvent = deviceEvent
-                interfaceEvent.apiEvent = foundApiEvent
-                interfaceEvent.prediction = {
-                  eventWithPrediction: deviceEvent.startDate >= new Date().getTime(),
-                  hasPrediction: false,
-                  value: undefined
-                }
-
-                this.globalCalendarEventsArray.push(interfaceEvent)
-              })
-              resolve(this.globalCalendarEventsArray)
-            },
-            error => reject(error)
-          )
-        },
-        error => reject(error)
-      )
+                resolve(this.globalCalendarEventsArray)
+              },
+              error => reject(error)
+            )
+          },
+          error => reject(error)
+        )
+      } else {
+        resolve(this.globalCalendarEventsArray)
+      }
+      
     })
   }
   sync() {
@@ -125,7 +131,7 @@ export class EventManagerService {
               let omittedUploadEventsCount = 0;
 
               // The list of events that need updates
-              let updateList: CalendarEvent[] = []
+              let updateList: PlatformIndependentEvent[] = []
 
               // Upload new events
               deviceEvents.forEach((platformEvent) => {
@@ -144,7 +150,11 @@ export class EventManagerService {
 
                 } else {
                   // Check if event should be updated
-
+                  if (platformEvent.lastModified != undefined && platformEvent.lastModified > 0) {
+                    if (searchedEvent.last_modified == null || searchedEvent.last_modified == undefined || searchedEvent.last_modified < Math.floor(platformEvent.lastModified / 1000)) {
+                      updateList.push(platformEvent)
+                    }
+                  }
                 }
               })
               syncInfo.omittedUploadEventsCount = omittedUploadEventsCount
@@ -164,8 +174,7 @@ export class EventManagerService {
                 }
               })
 
-              syncInfo.eventsRemovedFromApiCount = eventsToDelete.length
-
+              syncInfo.reomvedCount = eventsToDelete.length
 
               let updateChecked = false
               let uploadChecked = false
@@ -184,6 +193,7 @@ export class EventManagerService {
                 if (!updateChecked) {
                   updateChecked = true
                   if (updateList.length > 0) {
+                    this.apiEventsArray = []
                     this.syncAsyncUpdate(asyncTasksCallback, errorCallback, updateList)
                   } else {
                     asyncTasksCallback()
@@ -191,6 +201,7 @@ export class EventManagerService {
                 } else if (!uploadChecked) {
                   uploadChecked = true
                   if (uploadList.length > 0) {
+                    this.apiEventsArray = []
                     this.syncAsyncUpload(asyncTasksCallback, errorCallback, uploadList)
                   } else {
                     asyncTasksCallback()
@@ -198,6 +209,7 @@ export class EventManagerService {
                 } else {
                   deleteChecked = true
                   if (eventsToDelete.length > 0) {
+                    this.apiEventsArray = []
                     this.syncAsyncDelete(endSyncCallback, errorCallback, eventsToDelete)
                   } else {
                     endSyncCallback()
@@ -247,7 +259,7 @@ export class EventManagerService {
   // INTERNAL METHODS
 
   private syncAsyncUpload(succesCallback, errorCallback, eventsToUpload) {
-    console.log("Starting processing for following events")
+    console.log("Starting upload processing")
     this.eventsService.proccessEventsForApi(eventsToUpload).then(
       apiEventList => {
         console.log("Processed the following events: ")
@@ -293,7 +305,38 @@ export class EventManagerService {
   }
 
   private syncAsyncUpdate(succesCallback, errorCallback, eventsToUpdate) {
-    succesCallback()
+    console.log("Starting updating events on api")
+    this.eventsService.proccessEventsForApi(eventsToUpdate).then(
+      apiEventUpdateList => {
+        console.log("Processed the following events for update: ")
+        console.log(apiEventUpdateList)
+
+        let recursiveUpdateCallback = (index: number) => {
+          if (index < apiEventUpdateList.length) {
+            this.api.modifyEvent(this.userDetail.user_id, this.userDetail.calendarId, apiEventUpdateList[index].event_id, apiEventUpdateList[index]).then(
+              result => {
+                if (result) {
+                  console.log("Update event " + apiEventUpdateList[index].event_id + " in api")
+                  recursiveUpdateCallback(index + 1)
+                } else {
+                  errorCallback("Some error when deleting event " + apiEventUpdateList[index].event_id)
+                }
+              },
+              err => errorCallback(err)
+            )
+          } else {
+            console.log("Succesfully updated " + apiEventUpdateList.length + " events from API")
+            succesCallback()
+          }
+        }
+        if (apiEventUpdateList.length > 0) {
+          recursiveUpdateCallback(0)
+        } else {
+          succesCallback()
+        }
+      },
+      error => errorCallback(error)
+    )
   }
 
   /*
@@ -353,15 +396,21 @@ export class EventManagerService {
         result => {
           this.storage.getSelectedCalendarName().then(
             calendarName => {
-              this.calendar.getEventsFromCalendar(result.pastInfoDate, result.futureDate, calendarName).then(
-                deviceEvents => {
-                  this.deviceEventsArray = deviceEvents
-                  resolve(deviceEvents)
+              this.storage.getSelectedCalendarId().then(
+                calendarId => {
+                  this.calendar.getEventsFromCalendar(result.pastInfoDate, result.futureDate, calendarName, calendarId).then(
+                    deviceEvents => {
+                      this.deviceEventsArray = deviceEvents
+                      resolve(deviceEvents)
+                    },
+                    error => {
+                      reject(error)
+                    }
+                  )
                 },
-                error => {
-                  reject(error)
-                }
+                error => reject(error)
               )
+
             }
           )
         },

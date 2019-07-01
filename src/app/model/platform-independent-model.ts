@@ -6,14 +6,15 @@ import { Platform } from '@ionic/angular';
 export class PlatformIndependentEvent {
 
     event_id: string;
-    title = "";
+    title: string;
     startDate: number;
     endDate: number;
-    location = "";
-    calendarName = "";
-    source = "";
-    attendees = [];
-    organizerEmail = ""
+    lastModified: number;
+    location: string;
+    calendarName: string;
+    source: string;
+    attendees: any[] = [];
+    organizerEmail: string;
 
     static getEventArayFromData(data, platform: Platform): PlatformIndependentEvent[] {
         var eventArray = [];
@@ -22,7 +23,7 @@ export class PlatformIndependentEvent {
         data.forEach(element => {
             var event = new PlatformIndependentEvent();
 
-            if (platform.is('ios')) {
+            if (platform.is('ios') || platform.is('android')) {
                 event.event_id = this.getVal(element.id) + "-sdate-" + this.parseIosDateToUtc(this.getVal(element.startDate));
                 event.title = this.getVal(element.title);
                 event.startDate = this.parseIosDateToUtc(this.getVal(element.startDate));
@@ -30,8 +31,12 @@ export class PlatformIndependentEvent {
                 event.source = 'ios';
                 event.calendarName = this.getVal(element.calendar);
                 event.location = this.getVal(element.location);
-                event.organizerEmail = this.getVal(element.organizer).startsWith("mailto:") ? this.getVal(element.organizer).substring(7) : this.getVal(element.organizer)
-
+                event.lastModified = this.parseIosDateToUtc(this.getVal(element.lastModifiedDate))
+                if (element.organizer == undefined) {
+                    event.organizerEmail = ""
+                } else {
+                    event.organizerEmail = element.organizer.startsWith("mailto:") ? element.organizer.substring(7) : element.organizer
+                }
                 if (element.attendees !== undefined) {
                     element.attendees.forEach(attendeesElement => {
                         if (attendeesElement !== {}) {
@@ -44,19 +49,20 @@ export class PlatformIndependentEvent {
                             }
 
                             if (attendeesElement.URL != undefined) {
-                                attendeesObj.email = attendeesElement.URL.startsWith("mailto:") ? attendeesElement.URL.substring(7) : attendeesElement
+                                attendeesObj.email = attendeesElement.URL.startsWith("mailto:") ? attendeesElement.URL.substring(7) : attendeesElement.URL
+                            } else if(attendeesElement.email != undefined) {
+                                attendeesObj.email = attendeesElement.email.startsWith("mailto:") ? attendeesElement.email.substring(7) : attendeesElement.email
                             }
 
                             event.attendees.push(attendeesObj);
                         }
-
                     });
+                } else {
+                    event.attendees = []
                 }
 
 
-            } else if (platform.is('android')) {
-                // remeber to implement this
-            }
+            } 
             if (event.startDate != 0 && event.endDate != 0) {
                 eventArray.push(event);
             }

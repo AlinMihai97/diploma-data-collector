@@ -6,6 +6,7 @@
     font-size: 24px;
     margin-right: 8px;
 }
+
 .my-tabs {
     display: flex;
     flex-direction: column;
@@ -16,23 +17,89 @@
     .my-tabs-inner {
         position: relative;
         flex: 1;
-        contain: layout size style;
-    }
-
-    ion-tab-bar {
-        width: 80%;
-        position: fixed;
-        bottom: 3%;
-        left: 10%;
     }
 }
 .some-margin {
-    margin-top: 40%;
+    margin-top: 40vh;
 }
 
 .spinner-container {
     display: flex;
 }
+
 .center-item {
-    margin: auto;
+    margin: 0 auto;
+}
+
+ion-tab-bar {
+    position: fixed;
+    width: 80%;
+    left: 10%;
+    bottom: 2%;
+    height: 7%;
+    background-color: transparent;
+    border-top: 0px;
+}
+
+ion-tab-button {
+    border-width: 0.1px 0px 0.1px 0px;
+    border-style:solid;
+    border-color: #dddddd;
+
+    border-radius:0px 0px 0px 0px;
+    -moz-border-radius:0px 0px 0px 0px;
+    -webkit-border-radius:0px 0px 0px 0px;
+
+    margin-bottom: 2px;
+}
+
+ion-tab-button:first-child {
+    border-radius:18px 0px 0px 19px;
+    -moz-border-radius:18px 0px 0px 18px;
+    -webkit-border-radius:18px 0px 0px 18px;
+    border-width: 0.1px 0px 0.1px 0.1px;
+}
+
+ion-tab-button:last-child {
+    border-radius:0px 18px 18px 0px;
+    -moz-border-radius:0px 18px 18px 0px;
+    -webkit-border-radius:0px 18px 18px 0px;
+    border-width: 0.1px 0.1px 0.1px 0px;
+}
+
+.tab-text {
+    font-size: 10px;
+}
+
+.tab-icon {
+    color: #999999;
+}
+
+.tab-button {
+    color: #999999;
+    background-color: #FFFFFF;
+    -webkit-transition: background-color 0.3s; /* Safari prior 6.1 */
+    transition: background-color 0.3s;
+}
+
+.tab-button-selected {
+    color: white;
+    background-color: #00B0B9;
+    -webkit-transition: background-color 0.3s; /* Safari prior 6.1 */
+    transition: background-color 0.3s;
+}
+
+/* FIX scroll issue */
+.overflow-scroll {
+    overflow-y: auto;
+  }
+
+.custom-padding {
+    --padding-start: var(--ion-padding, 16px);
+    --padding-end: var(--ion-padding, 16px);
+    --padding-top: var(--ion-padding, 16px)
+}
+
+.hidden {
+    display: none !important;
 }

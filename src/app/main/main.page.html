@@ -6,7 +6,7 @@
       </ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Main page
+      Stress Detector
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -39,7 +39,7 @@
   </ion-content>
 </ion-menu>
 
-<ion-content padding main>
+<ion-content class="custom-padding" main forceOverscoll="true" scrollY="true">
   <div *ngIf="firstSyncInProgress" class="some-margin">
     <ion-item lines="none">
       <ion-label text-center text-wrap>Please wait while events sync</ion-label>
@@ -50,32 +50,55 @@
   </div>
   <div class="my-tabs" *ngIf="!firstSyncInProgress">
     <div class="my-tabs-inner">
-      <ng-container *ngIf="tab === 'schedule'">
-        <app-calendar-list-view [globalCalendarEventsArray]="globalCalendarEventsArray"></app-calendar-list-view>
+      <!-- <ng-container *ngIf="tab === 'schedule'"> -->
+      <ng-container>
+        <app-calendar-list-view [ngClass]="{'hidden': tab !== 'schedule'}"
+          [globalCalendarEventsArray]="globalCalendarEventsArray"></app-calendar-list-view>
       </ng-container>
 
-      <ng-container *ngIf="tab === 'week'">
-        Your speakers content
+      <!-- <ng-container *ngIf="tab === 'week'"> -->
+      <ng-container>
+        <app-week-view [ngClass]="{'hidden': tab !== 'week'}" [interfaceEvents]="globalCalendarEventsArray">
+        </app-week-view>
       </ng-container>
 
-      <ng-container *ngIf="tab === 'month'">
-        Your map content
+      <!-- <ng-container *ngIf="tab === 'month'"> -->
+      <ng-container>
+        <app-month-view [ngClass]="{'hidden': tab !== 'month'}" [interfaceEvents]="globalCalendarEventsArray">
+        </app-month-view>
       </ng-container>
     </div>
-
-    <ion-tab-bar slot="bottom">
-      <ion-tab-button (click)="show('schedule')">
-        <ion-label>Schedule</ion-label>
-      </ion-tab-button>
-
-      <ion-tab-button (click)="show('week')">
-        <ion-label>Week</ion-label>
-      </ion-tab-button>
-
-      <ion-tab-button (click)="show('month')">
-        <ion-label>Month</ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-
   </div>
 </ion-content>
+
+<ion-tab-bar>
+  <ion-tab-button (click)="show('schedule')" class="tab-button" [ngClass]="{'tab-button-selected': tab === 'schedule'}">
+    <ion-icon *ngIf="tab === 'schedule'" src="assets/icon/schedule_pe_fundal_verde.svg" size="small"
+      class="center-item tab-icon"></ion-icon>
+    <ion-icon *ngIf="tab !== 'schedule'" src="assets/icon/schedule_pe_fundal_alb.svg" size="small"
+      class="center-item tab-icon"></ion-icon>
+    <div>
+      <ion-label text-center class="tab-text">Schedule</ion-label>
+    </div>
+  </ion-tab-button>
+
+  <ion-tab-button (click)="show('week')" class="tab-button" [ngClass]="{'tab-button-selected': tab === 'week'}">
+    <ion-icon *ngIf="tab === 'week'" src="assets/icon/week_pe_fundal_verde.svg" size="small"
+      class="center-item tab-icon"></ion-icon>
+    <ion-icon *ngIf="tab !== 'week'" src="assets/icon/week_pe_fundal_alb.svg" size="small" class="center-item tab-icon">
+    </ion-icon>
+    <div>
+      <ion-label text-center class="tab-text">Week</ion-label>
+    </div>
+  </ion-tab-button>
+
+  <ion-tab-button (click)="show('month')" class="tab-button" [ngClass]="{'tab-button-selected': tab === 'month'}">
+    <ion-icon *ngIf="tab === 'month'" src="assets/icon/month_pe_fundal_verde.svg" size="small"
+      class="center-item tab-icon"></ion-icon>
+    <ion-icon *ngIf="tab !== 'month'" src="assets/icon/month_pe_fundal_alb.svg" size="small"
+      class="center-item tab-icon"></ion-icon>
+    <div>
+      <ion-label text-center class="tab-text">Month</ion-label>
+    </div>
+  </ion-tab-button>
+</ion-tab-bar>

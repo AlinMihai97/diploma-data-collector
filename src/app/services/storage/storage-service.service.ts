@@ -124,8 +124,24 @@ export class StorageService {
     return new Promise<boolean>((resolve, reject) => {
       this.storage.keys().then(
         keysArray => {
-          console.log(keysArray)
           if (keysArray.includes(this.userDataIndex)) {
+            console.log("[STORAGE SERVICE] Key found")
+            this.storage.getItem(this.userDataIndex).then(
+              result => {
+                let setupDate = result.setupDate
+                if (setupDate != undefined && setupDate > 0) {
+                  console.log("[STORAGE SERVICE] Setup date ok")
+                  resolve(true)
+                } else {
+                  resolve(false)
+                }
+
+              },
+              error => reject(error)
+            )
+
+
+
             resolve(true);
           } else {
             resolve(false);
@@ -157,6 +173,7 @@ export class StorageService {
           } else {
             this.storage.getItem(this.userDataIndex).then(
               (storedObject) => {
+                console.log("[STORAGE SERVICE] Storage key exists, adding value")
                 storedObject[key] = value
                 this.storage.setItem(this.userDataIndex, storedObject).then(
                   () => {
@@ -212,5 +229,5 @@ export class StorageService {
     });
   }
 
-  
+
 }

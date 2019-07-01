@@ -205,11 +205,19 @@ export class StressDetectorApiService {
       )
     });
   }
-  modifyEvent(user_id: string, calendar_id: string, event_id: number, event: CalendarEvent): Promise<string> {
+  modifyEvent(user_id: string, calendar_id: string, event_id: string, event: CalendarEvent): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      var address = this.apiBase + this.usersPath + "/" + user_id + this.calendarPath + "/" + calendar_id + this.eventPath + "/" + event_id + "/"
-      let processResult = (data) => { }
-      this.callApi(this.modifyEventInternal, address, event, resolve, reject, processResult)
+      var address = this.apiBase + this.usersPath + "/" + user_id + this.calendarPath + "/" + calendar_id + this.eventPath + "/" + event_id
+      this.authWrapper(this.deleteEventInternal, address, null).then(
+        result => {
+          if(result != "") {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        },
+        error => reject(error)
+      )
     });
   }
   deleteEvent(user_id: string, calendar_id: string, event_id: string): Promise<boolean> {

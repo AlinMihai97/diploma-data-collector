@@ -1,6 +1,33 @@
-<ion-content padding>
-  <ion-spinner class="spinner-postion" name="crescent"></ion-spinner>
-  <ion-item class="action-message" lines="none">
-    <ion-label>{{actionMessage}}</ion-label>
-  </ion-item>
+<ion-content scrollX="false" scrollY="false">
+  <div class="global-container">
+    <div class="some-margin">
+
+      <ion-item lines="none" color="fitbit-light-blue" class="slide-left" [ngClass]="{'dispaly': disp === true}">
+        <ion-avatar class="user-profile-pic center-item">
+          <img class="user-profile-pic" [src]="avatarUrl"
+            alt="https://mediastiriv1.freenode.ro/image/201509/w295h180/media-144264794796847100.jpg">
+        </ion-avatar>
+      </ion-item>
+
+      <ion-item lines="none" color="fitbit-light-blue" class="slide-right" [ngClass]="{'dispaly': disp === true}">
+        <ion-label text-center text-wrap class="label">
+          <p class="attribute-name-header">{{username}}</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item class="spinner-container" lines="none" color="fitbit-light-blue">
+        <ion-spinner class="center-item" name="crescent"></ion-spinner>
+      </ion-item>
+
+      <ion-item lines="none" color="fitbit-light-blue" class="slide-bottom" [ngClass]="{'dispaly': disp === true}">
+        <ion-label text-center text-wrap class="label">
+          <p>{{actionMessage}}</p>
+        </ion-label>
+      </ion-item>
+
+
+
+    </div>
+  </div>
+
 </ion-content>

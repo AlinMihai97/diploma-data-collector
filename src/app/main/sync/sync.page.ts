@@ -13,8 +13,8 @@ export class SyncPage implements OnInit {
 
   loadingFinished = false
   syncInfo: any
-
-  messagesArray: string[]
+  displayError = false
+  messagesArray: any[]
 
   constructor(public modalController: ModalController, private eventManager: EventManagerService) {
   }
@@ -24,6 +24,7 @@ export class SyncPage implements OnInit {
   }
   ionViewWillEnter() {
     this.loadingFinished = false
+    this.displayError = false
     this.eventManager.sync().then(
       syncInfo => {
         this.syncInfo = syncInfo
@@ -31,9 +32,9 @@ export class SyncPage implements OnInit {
         this.loadingFinished = true
       },
       error => {
-        this.loadingFinished = true
+        this.loadingFinished = false
         this.messagesArray = []
-        this.messagesArray.push("Sync error")
+        this.displayError = true
         console.log(error)
       }
     )
@@ -41,24 +42,54 @@ export class SyncPage implements OnInit {
 
   updateMessagesList() {
     this.messagesArray = []
-    if(this.syncInfo !== undefined) {
-      if(this.syncInfo.originalApIEventsCount != undefined) {
-        this.messagesArray.push("Before sync there were " + this.syncInfo.originalApIEventsCount + " events on api")
+    if (this.syncInfo !== undefined) {
+      if (this.syncInfo.originalApIEventsCount != undefined) {
+        this.messagesArray.push(
+          {
+            text: "Events on API before sync",
+            value: this.syncInfo.originalApIEventsCount
+          }
+        )
       }
-      if(this.syncInfo.originalDeviceEventsCount != undefined) {
-        this.messagesArray.push("On device there are " + this.syncInfo.originalDeviceEventsCount + " events")
+      if (this.syncInfo.originalDeviceEventsCount != undefined) {
+        this.messagesArray.push(
+          {
+            text: "Processed device events count",
+            value: this.syncInfo.originalDeviceEventsCount
+          }
+        )
       }
-      if(this.syncInfo.omittedUploadEventsCount != undefined) {
-        this.messagesArray.push("Ommitted " + this.syncInfo.omittedUploadEventsCount + " total recuring events")
+      if (this.syncInfo.uploadCount != undefined) {
+        this.messagesArray.push(
+          {
+            text: "New events uploaded on API count",
+            value: this.syncInfo.uploadCount
+          }
+        )
       }
-      if(this.syncInfo.uploadCount != undefined) {
-        this.messagesArray.push("Upload count " + this.syncInfo.uploadCount)
+      if (this.syncInfo.updateCount != undefined) {
+        this.messagesArray.push(
+          {
+            text: "Old events updated on api count",
+            value: this.syncInfo.updateCount
+          }
+        )
       }
-      if(this.syncInfo.updateCount != undefined) {
-        this.messagesArray.push("Update count " + this.syncInfo.updateCount)
+      if (this.syncInfo.reomvedCount != undefined) {
+        this.messagesArray.push(
+          {
+            text: "Events remove from API count",
+            value: this.syncInfo.reomvedCount
+          }
+        )
       }
-      if(this.syncInfo.syncEndDate !== undefined && this.syncInfo.syncStartDate !== undefined) {
-        this.messagesArray.push("Sync took " + (this.syncInfo.syncEndDate - this.syncInfo.syncStartDate)/1000 + " seconds")
+      if (this.syncInfo.syncEndDate !== undefined && this.syncInfo.syncStartDate !== undefined) {
+        this.messagesArray.push(
+          {
+            text: "Sync time",
+            value: (this.syncInfo.syncEndDate - this.syncInfo.syncStartDate) / 1000 + " seconds"
+          }
+        )
       }
     }
   }

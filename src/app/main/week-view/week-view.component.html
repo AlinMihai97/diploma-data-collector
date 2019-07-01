@@ -1,0 +1,68 @@
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+      <ion-col size='4' text-center>
+        <div (click)="backOneWeek()" center>
+          <ion-icon size="large" name="arrow-dropleft-circle"></ion-icon>
+        </div>
+      </ion-col>
+      <ion-col size='4' text-center>
+        <ion-label text-wrap>
+          {{currentWeek}}
+        </ion-label>
+      </ion-col>
+      <ion-col size='4' text-center>
+        <div (click)="forwardOneWeek()" center>
+          <ion-icon size="large" name="arrow-dropright-circle"></ion-icon>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <mwl-calendar-week-view [viewDate]="viewDate" [events]="events" (eventClicked)="handleEvent('Clicked', $event.event)"
+    [hourSegmentTemplate]="myHourSegment" [headerTemplate]="myHeaderTemplate" [tooltipAppendToBody]="false"
+    [eventTemplate]="myEventTemplate" [tooltipTemplate]="myTooltipTemplate">
+  </mwl-calendar-week-view>
+
+  <ng-template #myHourSegment let-segment="segment" let-locale="locale" let-segmentHeight="segmentHeight"
+    let-isTimeLabel="isTimeLabel">
+    <ion-label text-center class="cal-time hour-font" *ngIf="isTimeLabel">
+      {{ getShortHourFromDate(segment.date) }}
+    </ion-label>
+  </ng-template>
+
+  <ng-template #myHeaderTemplate let-days="days" let-locale="locale">
+    <div class="cal-day-headers header-class">
+      <div class="cal-header cell-class" *ngFor="let day of days; trackBy:trackByWeekDayHeaderDate"
+        [ngClass]="day.cssClass">
+        <div class="header-text">
+          <div class="allign">{{ getShortDayNameFromDate(day.date)}}</div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #myEventTemplate let-weekEvent="weekEvent" let-tooltipPlacement="tooltipPlacement"
+    let-eventClicked="eventClicked" let-tooltipTemplate="tooltipTemplate" let-tooltipAppendToBody="tooltipAppendToBody"
+    let-tooltipDisabled="tooltipDisabled">
+    <div class="cal-event" [style.backgroundColor]="weekEvent.event.color?.secondary"
+      [style.borderColor]="weekEvent.event.color?.primary"
+      [mwlCalendarTooltip]="!tooltipDisabled ? (weekEvent.event.title | calendarEventTitle:'weekTooltip':weekEvent.event) : ''"
+      [tooltipPlacement]="tooltipPlacement" [tooltipEvent]="weekEvent.event" [tooltipTemplate]="tooltipTemplate"
+      [tooltipAppendToBody]="tooltipAppendToBody" (mwlClick)="eventClicked.emit()">
+
+      <div>
+        <span *ngIf="weekEvent.event.meta.prediction.hasPrediction">+{{weekEvent.event.meta.prediction.value}}</span>
+        <ion-icon *ngIf="weekEvent.event.meta.prediction.hasPrediction" class="font-of-heart" src="assets/icon/inima_rosie.svg"></ion-icon>
+        <ion-icon *ngIf="!weekEvent.event.meta.prediction.hasPrediction" class="font-of-heart black" src="assets/icon/inima_neagra.svg"></ion-icon>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #myTooltipTemplate let-contents="contents" let-placement="placement" let-event="event">
+    <div class="cal-tooltip" [ngClass]="'cal-tooltip-' + placement">
+      <div class="cal-tooltip-arrow"></div>
+      <div class="cal-tooltip-inner">{{event.meta.deviceEvent.title}} {{getHours(event.meta.deviceEvent)}}</div>
+    </div>
+  </ng-template>
+
+</ion-content>

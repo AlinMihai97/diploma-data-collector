@@ -1,5 +1,4 @@
-<ion-item (click)="goToEventDetail()" lines="full">
-
+<ion-item class="item-color" (click)="goToEventDetail()" lines="none" color="fitbit-light-blue">
   <ion-label slot="start" class="sloted-fix-left">
     <div text-wrap class="bolded-text">
       {{title}}
@@ -8,5 +7,23 @@
       {{timeInterval}}
     </div>
   </ion-label>
-  <ion-label slot="end" class="sloted-fix-right">{{prediction}}</ion-label>
+  <div slot="end" class="sloted-fix-right">
+      <ion-icon *ngIf="!hasPrediction" size="small" src="assets/icon/inima_neagra.svg"></ion-icon>
+
+      <ion-icon *ngIf="hasPrediction && !hasLoadedPrediction" size="small" src="assets/icon/inima_gri.svg"></ion-icon>
+      <ion-spinner *ngIf="hasPrediction && !hasLoadedPrediction" size="small" name="crescent"></ion-spinner>
+
+      <ion-icon 
+      *ngIf="hasPrediction && hasLoadedPrediction" 
+      size="small" 
+      src="assets/icon/inima_rosie.svg"
+      [ngClass]="{
+        'beat1': predictionValue < 10,
+        'beat2': predictionValue >= 10 && predictionValue < 20,
+        'beat3': predictionValue > 20
+      }"
+      ></ion-icon>
+      <ion-label *ngIf="hasPrediction && hasLoadedPrediction">{{predictionValue}}</ion-label>
+  </div>
+  
 </ion-item>

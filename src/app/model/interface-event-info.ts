@@ -11,3 +11,5 @@ export class InterfaceEventInfo {
         value: number
     }
 }
+
+
